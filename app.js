@@ -17,12 +17,12 @@ mongo.set("useUnifiedTopology", true);
 mongo.set("useNewUrlParser", true);
 mongo.connect(databaseUrl);
 
+app.use(allowOrigin);
 app.use(news);
 app.use(users);
 app.use(admins);
 app.use(sources);
 app.use(fetching);
 app.use(favourite);
-app.use(allowOrigin);
 
 app.listen(port, () => console.log(`listening on port ${port}`));
