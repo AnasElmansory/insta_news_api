@@ -16,7 +16,7 @@ router.get("/api/sources", authorizeUser, async (req, res) => {
   res.send(sources);
 });
 
-router.get("/api/sources/:id", authorizeUser, async (req, res) => {
+router.get("/api/sources/byId/:id", authorizeUser, async (req, res) => {
   const { userId, error, id } = req.params;
   if (!id) return res.status(400).send("no source id specified");
   if (!userId || error)
@@ -26,19 +26,52 @@ router.get("/api/sources/:id", authorizeUser, async (req, res) => {
   const source = await Source.findOne({ id });
   res.send(source);
 });
+router.get(
+  "/api/sources/byUsername/:username",
+  authorizeUser,
+  async (req, res) => {
+    const { userId, error, username } = req.params;
+    if (!id) return res.status(400).send("no source id specified");
+    if (!userId || error)
+      return res
+        .status(401)
+        .send(`UnAuthorized error: ${error || "something went wrong"}`);
+    const source = await Source.findOne({ username, name: username });
+    res.send(source);
+  }
+);
 
 router.get(
-  "/api/control/sources/:id",
+  "/api/control/sources/byId/:id",
   authorizeUser,
   authorizeAdmin,
   async (req, res) => {
-    const { userId, isAdmin } = req.params;
+    const { userId, isAdmin, id } = req.params;
     if (req.params.error)
       return res.status(401).send(`UnAuthorized error: ${error}`);
     if (!isAdmin) return res.status(401).send("admin permission required!");
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");
-    const { data, includes, error } = await getSource();
+    const { data, includes, error } = await getSource({ id });
+    if (error) return res.status(500).send(`error: ${error}`);
+    res.send({
+      data,
+      includes,
+    });
+  }
+);
+router.get(
+  "/api/control/sources/byUsername/:username",
+  authorizeUser,
+  authorizeAdmin,
+  async (req, res) => {
+    const { userId, isAdmin, id } = req.params;
+    if (req.params.error)
+      return res.status(401).send(`UnAuthorized error: ${error}`);
+    if (!isAdmin) return res.status(401).send("admin permission required!");
+    if (!userId)
+      return res.status(401).send("UnAuthorized error: something went wrong!");
+    const { data, includes, error } = await getSource({ username });
     if (error) return res.status(500).send(`error: ${error}`);
     res.send({
       data,

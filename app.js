@@ -9,6 +9,7 @@ const fetching = require("./endpoints/fetching_controller");
 const users = require("./endpoints/users");
 const sources = require("./endpoints/sources");
 const news = require("./endpoints/news");
+const admins = require("./endpoints/admins");
 const favourite = require("./endpoints/favourites");
 
 mongo.set("useFindAndModify", false);
@@ -18,6 +19,7 @@ mongo.connect(databaseUrl);
 
 app.use(news);
 app.use(users);
+app.use(admins);
 app.use(sources);
 app.use(fetching);
 app.use(favourite);

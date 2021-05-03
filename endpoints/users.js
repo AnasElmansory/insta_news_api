@@ -3,7 +3,7 @@ const User = require("../models/user");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
 
 router.get(
-  "/api/users",
+  "/api/control/users",
   authorizeUser,
   authorizeAdmin,
   async (req, res, next) => {
@@ -20,7 +20,7 @@ router.get(
 );
 
 router.get(
-  "/api/users/:id",
+  "/api/control/users/:id",
   authorizeUser,
   authorizeAdmin,
   async (req, res, next) => {
@@ -33,41 +33,35 @@ router.get(
   }
 );
 
-router.post(
-  "/api/users",
-  authorizeUser,
-  authorizeAdmin,
-  async (req, res, next) => {
-    const { isAdmin } = req.params;
-    if (!isAdmin) return res.status(409).send("have no permission");
-    const { user } = req.body;
-    const exists = await User.exists({ id: user.id });
-    if (exists) return res.status(409).send("user already exists");
-    const _user = await User.find();
-    res.send(_user);
-  }
-);
+router.post("/api/users", authorizeUser, async (req, res, next) => {
+  const { user } = req.body;
+  const exists = await User.exists({ id: user.id });
+  if (exists) return res.status(409).send("user already exists");
+  const _user = await User.find();
+  res.send(_user);
+});
 
 router.put(
   "/api/users/:id",
   authorizeUser,
   authorizeAdmin,
   async (req, res, next) => {
-    const { isAdmin } = req.params;
-    if (!isAdmin) return res.status(409).send("have no permission");
-    const { id } = req.params;
+    const { userId, id } = req.params;
     const { user } = req.body;
     if (!id || !user) return res.status(400).send("bad request");
+    if (id !== userId)
+      return res.status(401).send("you don't have permission to update user");
     const _user = await User.findOneAndUpdate(
       { id: user.id },
-      { name: user.name, avatar: user.avatar }
+      { name: user.name, avatar: user.avatar },
+      { new: true }
     );
     res.send(_user);
   }
 );
 
 router.delete(
-  "/api/users/:id",
+  "/api/control/users/:id",
   authorizeUser,
   authorizeAdmin,
   async (req, res, next) => {

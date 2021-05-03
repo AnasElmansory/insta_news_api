@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Favourite = require("../models/favourite");
 const News = require("../models/news");
-const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
+const { authorizeUser } = require("../authentication/auth");
 
 router.get("/api/favourite/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
@@ -18,7 +18,7 @@ router.get("/api/favourite/news", authorizeUser, async (req, res) => {
 
 router.post("/api/favourite/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
-  const { newsId } = req.query;
+  const { newsId } = req.body;
   if (error) return res.status(401).send(`UnAuthorized error: ${error}`);
   if (!userId) return res.status(500).send("something went wrong!");
   const userFavExists = await Favourite.exists({ userId });
