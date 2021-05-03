@@ -3,7 +3,7 @@ const port = process.env.PORT;
 const databaseUrl = process.env.DATABASE_URL;
 const app = require("express")();
 const mongo = require("mongoose");
-
+const cors = require("cors");
 const { allowOrigin } = require("./utils/helper");
 const fetching = require("./endpoints/fetching_controller");
 const users = require("./endpoints/users");
@@ -17,7 +17,9 @@ mongo.set("useUnifiedTopology", true);
 mongo.set("useNewUrlParser", true);
 mongo.connect(databaseUrl);
 
-app.use(allowOrigin);
+app.use(
+  cors({ allowedHeaders: ["content-type, authorization, provider, x-api-key"] })
+);
 app.use(news);
 app.use(users);
 app.use(admins);
