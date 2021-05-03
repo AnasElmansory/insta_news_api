@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const Admin = require("../models/admin");
 const { authorizeUser } = require("../authentication/auth");
+const { allowOrigin } = require("../utils/helper");
 
-router.get("/api/admin/:id", authorizeUser, async (req, res) => {
+router.get("/api/admin/:id", authorizeUser, allowOrigin, async (req, res) => {
   const { userId, error, id } = req.params;
   if (!userId || error)
     return res.send(`UnAuthorized error: ${error || "something went wrong"}`);
