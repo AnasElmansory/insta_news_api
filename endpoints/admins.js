@@ -6,7 +6,7 @@ router.get("/api/admin/:id", authorizeUser, async (req, res) => {
   const { userId, error, id } = req.params;
   if (!userId || error)
     return res.send(`UnAuthorized error: ${error || "something went wrong"}`);
-  const admin = await Admin.find({ id });
+  const admin = await Admin.findOne({ id });
   res.send(admin);
 });
 
