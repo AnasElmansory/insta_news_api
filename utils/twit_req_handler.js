@@ -38,7 +38,7 @@ function stopTwitFeed() {
   try {
     clearInterval(id);
     id = null;
-    return "done";
+    return { id, result: "disabled" };
   } catch (err) {
     return err;
   }
