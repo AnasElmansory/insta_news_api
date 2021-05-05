@@ -29,7 +29,7 @@ async function startTwitFeed(max_result) {
         });
       } else console.error(error);
     });
-  }, 5000);
+  }, 500000);
 
   return id;
 }
