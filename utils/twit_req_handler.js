@@ -2,7 +2,7 @@ const { getSourceTweets } = require("./twitter_api");
 const News = require("../models/news");
 const Source = require("../models/source");
 
-let id;
+let id = undefined;
 async function startTwitFeed(max_result) {
   id = setInterval(async () => {
     const sources = await Source.find();
@@ -29,7 +29,7 @@ async function startTwitFeed(max_result) {
         });
       } else console.error(error);
     });
-  }, 500000);
+  }, 5000);
 
   return id;
 }
@@ -37,11 +37,15 @@ async function startTwitFeed(max_result) {
 function stopTwitFeed() {
   try {
     clearInterval(id);
-    id = null;
+    id = undefined;
     return { id, result: "disabled" };
   } catch (err) {
     return err;
   }
 }
 
-module.exports = { startTwitFeed, stopTwitFeed, id };
+function checkFeedingState() {
+  if (id === undefined || !id) return false;
+  else return true;
+}
+module.exports = { startTwitFeed, stopTwitFeed, checkFeedingState };

@@ -9,6 +9,8 @@ const newsSchema = new Schema({
   location: String,
   author_id: String,
   created_at: String,
+  entities: Object,
+  users: Array,
   attachments: Object,
   public_metrics: Object,
   media: Array,

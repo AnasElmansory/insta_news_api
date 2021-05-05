@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { stringify } = require("flatted");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
 const {
-  id,
+  checkFeedingState,
   startTwitFeed,
   stopTwitFeed,
 } = require("../utils/twit_req_handler");
@@ -14,9 +14,9 @@ router.get(
   async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
-    console.log(id);
-    const isFeeding = id !== undefined;
-    res.json({ id, feeding: isFeeding });
+    const isFeeding = checkFeedingState();
+    console.log(isFeeding);
+    res.json({ feeding: isFeeding });
   }
 );
 router.post(
@@ -38,9 +38,9 @@ router.post(
   async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
-    const { result, id } = stopTwitFeed();
-    const isFeeding = id !== undefined;
-    res.json({ result, id, feeding: isFeeding });
+    const { result, _id } = stopTwitFeed();
+    const isFeeding = _id !== undefined;
+    res.json({ result, _id, feeding: isFeeding });
   }
 );
 
