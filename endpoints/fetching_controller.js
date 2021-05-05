@@ -28,7 +28,7 @@ router.post(
     if (!isAdmin) return res.status(401).send("have no permission");
     const _id = await startTwitFeed();
     const isFeeding = _id !== undefined;
-    res.json({ _id, feeding: isFeeding });
+    res.json({ id: stringify(_id), feeding: isFeeding });
   }
 );
 router.post(
