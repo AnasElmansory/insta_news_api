@@ -7,32 +7,39 @@ const {
   stopTwitFeed,
 } = require("../utils/twit_req_handler");
 
-router.get("/api/feeding", authorizeUser, authorizeAdmin, async (req, res) => {
-  const { isAdmin } = req.params;
-  if (!isAdmin) return res.status(401).send("have no permission");
-  res.send(id);
-});
+router.get(
+  "/api/control/feeding",
+  authorizeUser,
+  authorizeAdmin,
+  async (req, res) => {
+    const { isAdmin } = req.params;
+    if (!isAdmin) return res.status(401).send("have no permission");
+    const isFeeding = id !== null;
+    res.json({ id, feeding: isFeeding });
+  }
+);
 router.post(
-  "/api/startfeeding",
+  "/api/control/startfeeding",
   authorizeUser,
   authorizeAdmin,
   async (req, res) => {
     const { isAdmin, max_result } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
     const _id = await startTwitFeed();
-
-    res.send(stringify(_id));
+    const isFeeding = id !== null;
+    res.json({ _id, feeding: isFeeding });
   }
 );
 router.post(
-  "/api/stopfeeding",
+  "/api/control/stopfeeding",
   authorizeUser,
   authorizeAdmin,
   async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
     const result = stopTwitFeed();
-    res.send(result);
+    const isFeeding = id !== null;
+    res.json({ result, id, feeding: isFeeding });
   }
 );
 

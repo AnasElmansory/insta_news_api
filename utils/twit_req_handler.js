@@ -7,7 +7,7 @@ async function startTwitFeed(max_result) {
   id = setInterval(async () => {
     const sources = await Source.find();
     sources.forEach(async (source) => {
-      const { tweets, error, media, meta } = await getSourceTweets(
+      const { tweets, error, media, meta, users } = await getSourceTweets(
         source.id,
         max_result
       );
@@ -22,6 +22,7 @@ async function startTwitFeed(max_result) {
             );
             publishedTweet.media = tweetMedia;
           }
+          if (users) publishedTweet.users = users;
           const exists = await News.exists({ id: tweet.id });
           if (exists) await News.findOneAndUpdate(publishedTweet);
           if (!exists) await News.create(publishedTweet);
@@ -36,6 +37,7 @@ async function startTwitFeed(max_result) {
 function stopTwitFeed() {
   try {
     clearInterval(id);
+    id = null;
     return "done";
   } catch (err) {
     return err;

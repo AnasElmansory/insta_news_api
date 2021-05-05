@@ -79,7 +79,13 @@ async function getSourceTweets(userId, maxResult) {
       "url",
       "width",
     ],
-    expansions: ["geo.place_id", "attachments.media_keys"],
+    expansions: [
+      "geo.place_id",
+      "attachments.media_keys",
+      "referenced_tweets.id.author_id",
+      "author_id",
+    ],
+    "user.fields": ["location", "profile_image_url"],
     max_results: maxResult,
   });
   result.tweets = _result.tweets;
