@@ -14,7 +14,8 @@ router.get(
   async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
-    const isFeeding = id !== null;
+    console.log(id);
+    const isFeeding = id !== undefined;
     res.json({ id, feeding: isFeeding });
   }
 );
@@ -26,7 +27,7 @@ router.post(
     const { isAdmin, max_result } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
     const _id = await startTwitFeed();
-    const isFeeding = _id !== null;
+    const isFeeding = _id !== undefined;
     res.json({ _id, feeding: isFeeding });
   }
 );
@@ -38,7 +39,7 @@ router.post(
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
     const { result, id } = stopTwitFeed();
-    const isFeeding = id !== null;
+    const isFeeding = id !== undefined;
     res.json({ result, id, feeding: isFeeding });
   }
 );
