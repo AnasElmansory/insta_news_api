@@ -27,18 +27,21 @@ router.get("/api/sources/byId/:id", authorizeUser, async (req, res) => {
   res.send(source);
 });
 router.get(
-  "api/sources/by/username/:username",
+  "/api/sources/by/username/:username",
   authorizeUser,
   async (req, res) => {
     const { userId, error, username } = req.params;
-    if (!id) return res.status(400).send("no source id specified");
+    const query = username;
+    if (!username) return res.status(400).send("no source username specified");
     if (!userId || error)
       return res
         .status(401)
         .send(`UnAuthorized error: ${error || "something went wrong"}`);
     const sources = await Source.find({
-      username: /username/i,
-      name: /username/i,
+      $or: [
+        { username: { $regex: username, $options: "i" } },
+        { name: { $regex: username, $options: "i" } },
+      ],
     });
     res.send(sources);
   }
@@ -56,8 +59,7 @@ router.get(
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");
     const { data, includes, error } = await getSource({ id });
-    console.log(error);
-    if (error) return res.status(500).send(`error: ${error}`);
+    if (error) return res.status(500).json({ error });
     res.send({
       data,
       includes,
@@ -70,9 +72,7 @@ router.get(
   authorizeAdmin,
   async (req, res) => {
     const { userId, isAdmin, username, error: authError } = req.params;
-
-    if (authError)
-      return res.status(401).send(`UnAuthorized error: ${authError}`);
+    if (authError) return res.status(401).send(`UnAuthorized  ${authError}`);
     if (!isAdmin) return res.status(401).send("admin permission required!");
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");

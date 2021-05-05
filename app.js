@@ -23,7 +23,6 @@ app.use(
       "content-type, authorization, provider, x-api-key, Accept",
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    preflightContinue: true,
   })
 );
 app.use(news);
