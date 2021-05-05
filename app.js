@@ -19,7 +19,10 @@ mongo.connect(databaseUrl);
 
 app.use(
   cors({
-    allowedHeaders: ["content-type, authorization, provider, x-api-key"],
+    allowedHeaders: [
+      "content-type, authorization, provider, x-api-key, Accept",
+    ],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: true,
   })
 );
