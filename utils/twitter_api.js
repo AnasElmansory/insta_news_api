@@ -27,7 +27,7 @@ async function getSource({ id, username }) {
     result.error = _result.errors;
     result.includes = _result.includes;
     return result;
-  } else if (useranme) {
+  } else if (username) {
     const _result = await client.v2.userByUsername(username, userFields);
     result.data = _result.data;
     result.error = _result.errors;
