@@ -27,7 +27,7 @@ router.get("/api/sources/byId/:id", authorizeUser, async (req, res) => {
   res.send(source);
 });
 router.get(
-  "/api/sources/byUsername/:username",
+  "api/sources/by/username/:username",
   authorizeUser,
   async (req, res) => {
     const { userId, error, username } = req.params;
@@ -56,6 +56,7 @@ router.get(
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");
     const { data, includes, error } = await getSource({ id });
+    console.log(error);
     if (error) return res.status(500).send(`error: ${error}`);
     res.send({
       data,
@@ -64,14 +65,14 @@ router.get(
   }
 );
 router.get(
-  "/api/control/sources/byUsername/:username",
+  "/api/control/sources/by/username/:username",
   authorizeUser,
   authorizeAdmin,
   async (req, res) => {
-    const { userId, isAdmin, username } = req.params;
+    const { userId, isAdmin, username, error: authError } = req.params;
 
-    if (req.params.error)
-      return res.status(401).send(`UnAuthorized error: ${error}`);
+    if (authError)
+      return res.status(401).send(`UnAuthorized error: ${authError}`);
     if (!isAdmin) return res.status(401).send("admin permission required!");
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");
