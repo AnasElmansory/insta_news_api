@@ -26,6 +26,7 @@ app.use(
     preflightContinue: true,
   })
 );
+const a = "";
 app.use(news);
 app.use(users);
 app.use(admins);
