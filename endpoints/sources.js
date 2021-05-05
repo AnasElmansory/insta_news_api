@@ -68,7 +68,7 @@ router.get(
   authorizeUser,
   authorizeAdmin,
   async (req, res) => {
-    const { userId, isAdmin, id } = req.params;
+    const { userId, isAdmin, username } = req.params;
     if (req.params.error)
       return res.status(401).send(`UnAuthorized error: ${error}`);
     if (!isAdmin) return res.status(401).send("admin permission required!");
