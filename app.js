@@ -18,7 +18,10 @@ mongo.set("useNewUrlParser", true);
 mongo.connect(databaseUrl);
 
 app.use(
-  cors({ allowedHeaders: ["content-type, authorization, provider, x-api-key"] })
+  cors({
+    allowedHeaders: ["content-type, authorization, provider, x-api-key"],
+    preflightContinue: true,
+  })
 );
 app.use(news);
 app.use(users);
