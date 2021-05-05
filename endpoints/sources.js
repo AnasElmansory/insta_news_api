@@ -36,8 +36,11 @@ router.get(
       return res
         .status(401)
         .send(`UnAuthorized error: ${error || "something went wrong"}`);
-    const source = await Source.findOne({ username, name: username });
-    res.send(source);
+    const sources = await Source.find({
+      username: /username/i,
+      name: /username/i,
+    });
+    res.send(sources);
   }
 );
 
