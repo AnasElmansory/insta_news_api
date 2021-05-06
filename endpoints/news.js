@@ -30,8 +30,8 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   if (!userId || error)
     return res.send(`UnAuthorized error: ${error || "something went wrong"}`);
-  if (!req.body) return res.status(400).send("no news source specified");
-  const { error: validationError, value } = sourceSchema.validate(req.body);
+  if (!req.query) return res.status(400).send("no news source specified");
+  const { error: validationError, value } = sourceSchema.validate(req.query);
   if (validationError) return res.status(400).send(validationError);
   let { page, pageSize } = req.query;
   if (!page) page = 1;
