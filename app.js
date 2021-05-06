@@ -11,6 +11,7 @@ const sources = require("./endpoints/sources");
 const news = require("./endpoints/news");
 const admins = require("./endpoints/admins");
 const favourite = require("./endpoints/favourites");
+const { json } = require("body-parser");
 
 mongo.set("useFindAndModify", false);
 mongo.set("useUnifiedTopology", true);
@@ -25,6 +26,7 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   })
 );
+app.use(json());
 app.use(news);
 app.use(users);
 app.use(admins);
