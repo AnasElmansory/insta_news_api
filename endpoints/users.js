@@ -7,8 +7,8 @@ router.get(
   authorizeUser,
   authorizeAdmin,
   async (req, res, next) => {
-    const { userId, error } = req.params;
-    const { isAdmin } = req.params;
+    const { userId, error, isAdmin } = req.params;
+    if (error || !userId) return res.status(403).send(error);
     if (!isAdmin) return res.status(401).send("have no permission");
     let { page, pageSize } = req.query;
     if (!page) page = 1;
@@ -71,6 +71,24 @@ router.delete(
     if (!id) return res.status(400).send("bad request");
     const user = await User.findOneAndDelete({ id: user.id });
     res.send(user);
+  }
+);
+
+router.get(
+  "/api/control/search/users/:username",
+  authorizeUser,
+  authorizeAdmin,
+  async (req, res, next) => {
+    const { userId, error, isAdmin, username } = req.params;
+    if (!userId || error)
+      return res
+        .status(403)
+        .send(`UnAuthorized  ${error || "something went wrong"}`);
+    if (!isAdmin) return res.status(401).send("have no permission");
+    const users = await User.find({
+      $or: [{ name: { $regex: username, $options: "i" } }],
+    });
+    res.send(users);
   }
 );
 
