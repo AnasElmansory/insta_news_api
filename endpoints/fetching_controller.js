@@ -5,7 +5,7 @@ const {
   checkFeedingState,
   startTwitFeed,
   stopTwitFeed,
-} = require("../utils/twit_req_handler");
+} = require("../utils/tweets_feed_handler");
 
 router.get(
   "/api/control/feeding",
