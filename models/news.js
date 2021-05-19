@@ -14,6 +14,7 @@ const newsSchema = new Schema({
   attachments: Object,
   public_metrics: Object,
   media: Array,
+  countries: Array,
 });
 
 const News = mongo.model("news", newsSchema, "news");

@@ -22,10 +22,10 @@ const sourceSchema = Joi.object({
   name: Joi.string().max(50).required(),
   profile_image_url: Joi.string().default(""),
   url: Joi.string().default(""),
-  location: Joi.string(),
-  description: Joi.string(),
+  location: Joi.string().default("unknown"),
+  description: Joi.string().default(""),
   created_at: Joi.string(),
-  verified: Joi.bool(),
+  verified: Joi.bool().default(false),
 });
 
 const newsSchema = Joi.object({
@@ -39,6 +39,12 @@ const newsSchema = Joi.object({
   attachments: Joi.object(),
   public_metrics: Joi.object(),
   media: Joi.array(),
+  countries: Joi.array(),
+});
+
+const countrySchema = Joi.object({
+  countryName: Joi.string().required(),
+  countryCode: Joi.string(),
 });
 
 module.exports = {
@@ -46,4 +52,5 @@ module.exports = {
   sourceSchema,
   adminSchema,
   newsSchema,
+  countrySchema,
 };

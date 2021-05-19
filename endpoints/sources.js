@@ -7,7 +7,9 @@ const { getSource } = require("../utils/twitter_api");
 router.get("/api/sources", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   if (!userId || error)
-    return res.send(`UnAuthorized error: ${error || "something went wrong"}`);
+    return res
+      .status(403)
+      .send(`UnAuthorized error: ${error || "something went wrong"}`);
   let { page, pageSize } = req.query;
   if (!page) page = 1;
   if (!pageSize) pageSize = 10;
@@ -77,7 +79,7 @@ router.get(
     if (!userId)
       return res.status(401).send("UnAuthorized error: something went wrong!");
     const { data, includes, error } = await getSource({ username });
-    if (error) return res.status(500).send(`error: ${error}`);
+    if (error) return res.status(500).json(error);
     res.send({
       data,
       includes,

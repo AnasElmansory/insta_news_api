@@ -5,8 +5,10 @@ const { authorizeUser } = require("../authentication/auth");
 
 router.get("/api/favourite/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
-  if (error) return res.status(401).send(`UnAuthorized error: ${error}`);
-  if (!userId) return res.status(500).send("something went wrong!");
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
   const fav = await Favourite.findOne({ userId });
   let news;
   if (fav) {
@@ -19,8 +21,10 @@ router.get("/api/favourite/news", authorizeUser, async (req, res) => {
 router.post("/api/favourite/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { newsId } = req.body;
-  if (error) return res.status(401).send(`UnAuthorized error: ${error}`);
-  if (!userId) return res.status(500).send("something went wrong!");
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
   const userFavExists = await Favourite.exists({ userId });
   const exists = await Favourite.exists({ favNewsIds: newsId });
   if (!userFavExists) {

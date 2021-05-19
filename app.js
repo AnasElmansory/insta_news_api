@@ -4,7 +4,6 @@ const databaseUrl = process.env.DATABASE_URL;
 const app = require("express")();
 const mongo = require("mongoose");
 const cors = require("cors");
-const { allowOrigin } = require("./utils/helper");
 const fetching = require("./endpoints/fetching_controller");
 const users = require("./endpoints/users");
 const sources = require("./endpoints/sources");
