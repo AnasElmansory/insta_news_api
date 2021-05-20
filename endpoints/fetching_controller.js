@@ -15,7 +15,6 @@ router.get(
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(401).send("have no permission");
     const isFeeding = checkFeedingState();
-    console.log(isFeeding);
     res.json({ feeding: isFeeding });
   }
 );

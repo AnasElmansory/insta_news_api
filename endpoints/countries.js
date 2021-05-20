@@ -31,7 +31,7 @@ router.get(
     if (!pageSize) pageSize = 10;
     const skip = (page - 1) * pageSize;
 
-    const countries = await Country.find().limits(pageSize).skip(skip);
+    const countries = await Country.find().limit(pageSize).skip(skip);
     res.send(countries);
   }
 );
