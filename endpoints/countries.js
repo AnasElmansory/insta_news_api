@@ -118,7 +118,7 @@ router.delete(
         .status(404)
         .send(`this country {${country.countryName}} doesn't exists`);
 
-    const _country = await Country.findOneAndDelete(country);
+    const _country = await Country.findOneAndDelete({ countryName });
     res.send(_country);
   }
 );
