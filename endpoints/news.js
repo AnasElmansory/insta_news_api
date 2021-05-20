@@ -30,17 +30,18 @@ router.get("/api/news/:id", authorizeUser, async (req, res) => {
 
 router.get("/api/news/by/source", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
+  let { page, pageSize, source } = req.query;
+  if (!page) page = 1;
+  if (!pageSize) pageSize = 10;
+  const skip = (page - 1) * pageSize;
+
   if (!userId || error)
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
-  if (!req.query) return res.status(400).send("no news source specified");
-  const { error: validationError, value } = sourceSchema.validate(req.query);
+  if (!source) return res.status(400).send("no news source specified");
+  const { error: validationError, value } = sourceSchema.validate(source);
   if (validationError) return res.status(400).send(validationError);
-  let { page, pageSize } = req.query;
-  if (!page) page = 1;
-  if (!pageSize) pageSize = 10;
-  const skip = (page - 1) * pageSize;
   const news = await News.find({
     $or: [
       { author_id: value.id },
