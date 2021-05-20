@@ -1,11 +1,7 @@
 const router = require("express").Router();
 const Country = require("../models/country");
 const { countrySchema } = require("../utils/schemas");
-const {
-  authorizeUser,
-  authorizeUser,
-  authorizeAdmin,
-} = require("../authentication/auth");
+const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
 //* country and source id
 //* add contries object to news
 //* create collections of countries
