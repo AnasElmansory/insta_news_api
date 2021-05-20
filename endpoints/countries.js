@@ -112,7 +112,7 @@ router.delete(
         .status(403)
         .send(`UnAuthorized : ${error || "something went wrong"}`);
     if (!isAdmin) res.status(403).send("require admin permission");
-    const exists = await Country.exists({ country });
+    const exists = await Country.exists({ countryName });
     if (!exists)
       return res
         .status(404)
