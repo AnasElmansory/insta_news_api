@@ -10,6 +10,7 @@ const sources = require("./endpoints/sources");
 const news = require("./endpoints/news");
 const admins = require("./endpoints/admins");
 const favourite = require("./endpoints/favourites");
+const countries = require("./endpoints/countries");
 const { json } = require("body-parser");
 
 mongo.set("useFindAndModify", false);
@@ -31,6 +32,7 @@ app.use(users);
 app.use(admins);
 app.use(sources);
 app.use(fetching);
+app.use(countries);
 app.use(favourite);
 
 app.listen(port, () => console.log(`listening on port ${port}`));
