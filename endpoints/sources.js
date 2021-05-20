@@ -69,8 +69,8 @@ router.get(
 );
 router.get(
   "/api/control/sources/by/username/:username",
-  // authorizeUser,
-  // authorizeAdmin,
+  authorizeUser,
+  authorizeAdmin,
   async (req, res) => {
     const { userId, isAdmin, username, error: authError } = req.params;
     const decodedUsername = decodeURI(username);
