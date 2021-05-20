@@ -24,7 +24,6 @@ async function feedingNews(max_result) {
       }
       if (users) publishedTweet.users = users;
       const exists = await News.exists({ id: tweet.id });
-      if (exists) await News.findOneAndUpdate(publishedTweet);
       if (!exists) await News.create(publishedTweet);
     });
   });
