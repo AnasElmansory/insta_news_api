@@ -33,7 +33,6 @@ router.get(
   authorizeUser,
   async (req, res) => {
     const { userId, error, username } = req.params;
-    const query = username;
     if (!username) return res.status(400).send("no source username specified");
     if (!userId || error)
       return res
@@ -70,10 +69,15 @@ router.get(
 );
 router.get(
   "/api/control/sources/by/username/:username",
-  authorizeUser,
-  authorizeAdmin,
+  // authorizeUser,
+  // authorizeAdmin,
   async (req, res) => {
     const { userId, isAdmin, username, error: authError } = req.params;
+    const decodedUsername = decodeURI(username);
+    const arabic = /[\u0600-\u06FF]/;
+    const isArabic = arabic.test(decodedUsername);
+    if (isArabic)
+      return res.status(400).send("cannot search with arabic characters!");
     if (authError) return res.status(401).send(`UnAuthorized  ${authError}`);
     if (!isAdmin) return res.status(401).send("admin permission required!");
     if (!userId)
