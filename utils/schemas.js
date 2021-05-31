@@ -45,6 +45,7 @@ const newsSchema = Joi.object({
 const countrySchema = Joi.object({
   countryName: Joi.string().required(),
   countryCode: Joi.string(),
+  countryAliases: Joi.array(),
 });
 
 module.exports = {

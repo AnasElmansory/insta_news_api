@@ -4,7 +4,7 @@ const axios = require("axios").default;
 module.exports = async function verifyFacebookUser(token) {
   const response = {};
   try {
-    const _response = await axios.get(facebookAccessTokenUrl + "?=" + token);
+    const _response = await axios.get(facebookAccessTokenUrl + "=" + token);
     response.data = _response.data;
     return response;
   } catch (err) {

@@ -3,7 +3,7 @@ const Schema = mongo.Schema;
 
 const favouriteSchema = new Schema({
   userId: String,
-  favNewsIds: Array,
+  favNewsIds: [{ type: String }],
 });
 
 const Favourite = mongo.model("favourite", favouriteSchema, "favourites");
