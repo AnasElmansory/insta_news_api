@@ -23,6 +23,24 @@ router.get(
     res.send(countries);
   }
 );
+router.get(
+  "/api/control/search-countries/:country",
+  authorizeUser,
+  async (req, res) => {
+    const { userId, error, country } = req.params;
+    if (!userId || error)
+      return res
+        .status(403)
+        .send(`UnAuthorized : ${error || "something went wrong"}`);
+    if (!country)
+      return res.status(400).send("please specify country parameter");
+
+    const countries = await Country.find({
+      countryName: { $regex: country, $options: "i" },
+    });
+    res.send(countries);
+  }
+);
 
 router.post(
   "/api/control/countries",
