@@ -27,7 +27,7 @@ async function authorizeUser(req, res, next) {
     if (data) req.params.userId = data.sub;
     next();
   } else if (provider === "guest") {
-    req.parms.userId = provider;
+    req.params.userId = provider;
     next();
   } else {
     req.params.error = "unknown provider";
