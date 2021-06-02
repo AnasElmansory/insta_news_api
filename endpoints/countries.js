@@ -2,29 +2,17 @@ const router = require("express").Router();
 const Country = require("../models/country");
 const { countrySchema } = require("../utils/schemas");
 const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
-//* country and source id
-//* add contries object to news
-//* create collections of countries
 
-/*
-news {
-      id: newsId,
-      contries: [CountryObject(countryname, countrycode), ...],
-      ...,
-      ...
- }
-*/
 router.get(
   "/api/control/countries",
   authorizeUser,
-  authorizeAdmin,
+
   async (req, res) => {
-    const { isAdmin, userId, error } = req.params;
+    const { userId, error } = req.params;
     if (!userId || error)
       return res
         .status(403)
         .send(`UnAuthorized : ${error || "something went wrong"}`);
-    if (!isAdmin) res.status(403).send("require admin permission");
 
     let { page, pageSize } = req.query;
     if (!page) page = 1;

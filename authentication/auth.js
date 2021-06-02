@@ -5,6 +5,7 @@ const Admin = require("../models/admin");
 
 function extractToken(req) {
   const { authorization, provider } = req.headers;
+  if (provider === "guest") return { provider, token: "guestToken" };
   if (!authorization) return (req.error = "missing authorization header");
   const token = authorization.split(" ")[1];
   if (!token) return (req.error = "no token found");
@@ -24,6 +25,9 @@ async function authorizeUser(req, res, next) {
     const { error, data } = await verifyGoogleUser(token);
     req.params.error = error;
     if (data) req.params.userId = data.sub;
+    next();
+  } else if (provider === "guest") {
+    req.parms.userId = provider;
     next();
   } else {
     req.params.error = "unknown provider";
