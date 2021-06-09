@@ -13,7 +13,10 @@ router.get("/api/news", authorizeUser, async (req, res) => {
   if (!page) page = 1;
   if (!pageSize) pageSize = 10;
   const skip = (page - 1) * pageSize;
-  const news = await News.find().limit(pageSize).skip(skip);
+  const news = await News.find()
+    .sort({ created_at: "descending" })
+    .limit(pageSize)
+    .skip(skip);
   res.send(news);
 });
 
@@ -49,6 +52,7 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
       { "users.name": value.name },
     ],
   })
+    .sort({ created_at: "descending" })
     .limit(pageSize)
     .skip(skip);
   res.send(news);
