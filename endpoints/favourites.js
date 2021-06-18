@@ -46,7 +46,8 @@ router.post("/api/favourite/news", authorizeUser, async (req, res) => {
       { $pull: { favNewsIds: newsId } },
       { new: true }
     );
-    return res.send(fav);
+    const news = await News.findOne({ id: newsId });
+    return res.send(news);
   }
 });
 
