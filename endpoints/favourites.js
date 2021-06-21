@@ -39,16 +39,15 @@ router.post("/api/favourite/news", authorizeUser, async (req, res) => {
       { $push: { favNewsIds: newsId } },
       { new: true }
     );
-    return res.send(fav);
   } else if (exists) {
     const fav = await Favourite.findOneAndUpdate(
       { userId },
       { $pull: { favNewsIds: newsId } },
       { new: true }
     );
-    const news = await News.findOne({ id: newsId });
-    return res.send(news);
   }
+  const news = await News.findOne({ id: newsId });
+  return res.send(news);
 });
 
 module.exports = router;
