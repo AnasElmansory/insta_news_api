@@ -62,6 +62,9 @@ router.get("/api/news/search", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { source, query } = req.query;
   const decodedQuery = decodeURI(query);
+  const decodedSource = decodeURI(source);
+  console.log(decodedQuery);
+  console.log(decodedSource);
   const filters = [];
   filters.push({ text: { $regex: decodedQuery, $options: "i" } });
   if (!userId || error)
@@ -69,7 +72,7 @@ router.get("/api/news/search", authorizeUser, async (req, res) => {
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   if (source) {
-    const { value } = sourceSchema.validate(source);
+    const { value } = sourceSchema.validate(decodedSource);
     filters.push([
       { author_id: value.id },
       { "users.username": value.username },
