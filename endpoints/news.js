@@ -58,31 +58,37 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
   res.send(news);
 });
 
-router.get("/api/news/search", authorizeUser, async (req, res) => {
+router.get("/api/search/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { source, query } = req.query;
   const decodedQuery = decodeURI(query);
   const decodedSource = decodeURI(source);
-  console.log(decodedQuery);
-  console.log(decodedSource);
-  const filters = [];
-  filters.push({ text: { $regex: decodedQuery, $options: "i" } });
+  const sourceFilters = {
+    $and: [
+      { author_id: decodedSource.id },
+      { "users.username": decodedSource.username },
+      { "users.name": decodedSource.name },
+      { text: { $regex: decodedQuery, $options: "i" } },
+    ],
+  };
+  const generalFilters = {
+    $or: [
+      { author_id: decodedSource.id },
+      { "users.username": decodedSource.username },
+      { "users.name": decodedSource.name },
+      { text: { $regex: decodedQuery, $options: "i" } },
+    ],
+  };
   if (!userId || error)
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
-  if (source) {
-    const { value } = sourceSchema.validate(decodedSource);
-    filters.push([
-      { author_id: value.id },
-      { "users.username": value.username },
-      { "users.name": value.name },
-    ]);
-  }
-  const news = await News.find({ $and: filters })
-    .sort({ created_at: "descending" })
-    .limit(pageSize)
-    .skip(skip);
+  const { value } = sourceSchema.validate(decodedSource);
+
+  const news = await News.find(source ? sourceFilters : generalFilters).sort({
+    created_at: "descending",
+  });
+
   res.send(news);
 });
 
