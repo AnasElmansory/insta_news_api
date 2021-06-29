@@ -58,4 +58,28 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
   res.send(news);
 });
 
+router.get("/api/news/search", authorizeUser, async (req, res) => {
+  const { userId, error } = req.params;
+  const { source, query } = req.query;
+  const filters = [];
+  filters.push({ text: { $regex: query, $options: "i" } });
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
+  if (source) {
+    const { value } = sourceSchema.validate(source);
+    filters.push([
+      { author_id: value.id },
+      { "users.username": value.username },
+      { "users.name": value.name },
+    ]);
+  }
+  const news = await News.find({ $and: filters })
+    .sort({ created_at: "descending" })
+    .limit(pageSize)
+    .skip(skip);
+  res.send(news);
+});
+
 module.exports = router;
