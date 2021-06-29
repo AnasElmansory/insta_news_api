@@ -61,8 +61,9 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
 router.get("/api/news/search", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { source, query } = req.query;
+  const decodedQuery = decodeURI(query);
   const filters = [];
-  filters.push({ text: { $regex: query, $options: "i" } });
+  filters.push({ text: { $regex: decodedQuery, $options: "i" } });
   if (!userId || error)
     return res
       .status(403)
