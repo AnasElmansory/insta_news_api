@@ -63,11 +63,13 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const { source, query } = req.query;
   const decodedQuery = decodeURI(query);
   const decodedSource = decodeURI(source);
+  const { value } = sourceSchema.validate(decodedSource);
+
   const sourceFilters = {
     $and: [
-      { author_id: decodedSource.id },
-      { "users.username": decodedSource.username },
-      { "users.name": decodedSource.name },
+      { author_id: value.id },
+      { "users.username": value.username },
+      { "users.name": value.name },
       { text: { $regex: decodedQuery, $options: "i" } },
     ],
   };
@@ -83,7 +85,6 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
-  const { value } = sourceSchema.validate(decodedSource);
 
   const news = await News.find(source ? sourceFilters : generalFilters).sort({
     created_at: "descending",
