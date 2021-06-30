@@ -64,7 +64,8 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const decodedQuery = decodeURI(query);
   const decodedSource = decodeURI(source);
   const { value } = sourceSchema.validate(decodedSource);
-
+  console.log(decodedQuery);
+  console.log(decodedSource);
   const sourceFilters = {
     $and: [
       { author_id: value.id },
@@ -89,7 +90,7 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const news = await News.find(source ? sourceFilters : generalFilters).sort({
     created_at: "descending",
   });
-
+  console.log(news);
   res.send(news);
 });
 
