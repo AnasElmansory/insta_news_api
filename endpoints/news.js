@@ -65,7 +65,7 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const decodedSource = decodeURI(source);
   const { value } = sourceSchema.validate(decodedSource);
   console.log(decodedQuery);
-  console.log(value);
+  console.log(...value);
   const sourceFilters = {
     $and: [
       { author_id: value.id },
