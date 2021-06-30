@@ -62,8 +62,7 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { source, query } = req.query;
   const decodedQuery = decodeURI(query);
-  const decodedSource = decodeURI(source);
-  const { value } = sourceSchema.validate(decodedSource);
+  const { value } = sourceSchema.validate(source);
   console.log(decodedQuery);
   console.log(value.id);
   console.log(value.username);
