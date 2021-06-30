@@ -77,10 +77,10 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   };
   const generalFilters = {
     $or: [
-      { author_id: decodedSource.id },
-      { "users.username": decodedSource.username },
-      { "users.name": decodedSource.name },
-      { text: { $regex: decodedQuery, $options: "i" } },
+      { author_id: value.id },
+      { "users.username": value.username },
+      { "users.name": value.name },
+      { text: { $regex: value, $options: "i" } },
     ],
   };
   if (!userId || error)
@@ -91,10 +91,8 @@ router.get("/api/search/news", authorizeUser, async (req, res) => {
   const news = await News.find(source ? sourceFilters : generalFilters).sort({
     created_at: "descending",
   });
-  const newsS = await News.find(sourceFilters).sort({
-    created_at: "descending",
-  });
-  console.log(newsS);
+
+  console.log(news);
   res.send(news);
 });
 
