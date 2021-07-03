@@ -1,7 +1,7 @@
 const { getSourceTweets } = require("./twitter_api");
 const News = require("../models/news");
 const Source = require("../models/source");
-
+const sendNotification = require("../notifications/notification_manager");
 let id = undefined;
 
 async function feedingNews(max_result) {
@@ -13,6 +13,10 @@ async function feedingNews(max_result) {
     );
     if (error) console.error(error);
     tweets.forEach(async (tweet) => {
+      sendNotification(source.username, {
+        title: source.username,
+        body: tweet.text,
+      });
       let publishedTweet = { ...tweet };
       const { attachments } = tweet;
       if (attachments && media) {
