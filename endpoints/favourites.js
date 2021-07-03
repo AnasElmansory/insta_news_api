@@ -21,6 +21,7 @@ router.get("/api/favourite/news", authorizeUser, async (req, res) => {
 router.get("/api/favourite/search", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { query } = req.query;
+  const decodedQuery = decodeURI(query);
   if (!userId || error)
     return res
       .status(403)
@@ -33,7 +34,7 @@ router.get("/api/favourite/search", authorizeUser, async (req, res) => {
     news = await News.find({
       $and: [
         { id: { $in: favNewsIds } },
-        { text: { $regex: query, $options: "i" } },
+        { text: { $regex: decodedQuery, $options: "i" } },
       ],
     });
   }
