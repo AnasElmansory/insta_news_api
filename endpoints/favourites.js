@@ -31,6 +31,7 @@ router.get("/api/favourite/search", authorizeUser, async (req, res) => {
   let news;
   if (fav) {
     const { favNewsIds } = fav;
+    console.log(favNewsIds);
     news = await News.find({
       id: { $in: favNewsIds },
       text: { $regex: decodedQuery, $options: "i" },
