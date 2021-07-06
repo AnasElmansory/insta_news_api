@@ -86,12 +86,8 @@ router.put(
         .send(`this country {${value.countryName}} doesn't exists`);
 
     const country = await Country.findOneAndUpdate(
-      {
-        countryCode: value.countryCode,
-        countryName: value.countryName,
-        sources: value.sources,
-      },
-      {},
+      { countryName: value.countryName },
+      { countryCode: value.countryCode, sources: value.sources },
       { new: true }
     );
     console.log(country);
