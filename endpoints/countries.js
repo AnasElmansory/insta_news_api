@@ -3,26 +3,21 @@ const Country = require("../models/country");
 const { countrySchema } = require("../utils/schemas");
 const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
 
-router.get(
-  "/api/control/countries",
-  authorizeUser,
+router.get("/api/control/countries", authorizeUser, async (req, res) => {
+  const { userId, error } = req.params;
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
 
-  async (req, res) => {
-    const { userId, error } = req.params;
-    if (!userId || error)
-      return res
-        .status(403)
-        .send(`UnAuthorized : ${error || "something went wrong"}`);
+  let { page, pageSize } = req.query;
+  if (!page) page = 1;
+  if (!pageSize) pageSize = 10;
+  const skip = (page - 1) * pageSize;
 
-    let { page, pageSize } = req.query;
-    if (!page) page = 1;
-    if (!pageSize) pageSize = 10;
-    const skip = (page - 1) * pageSize;
-
-    const countries = await Country.find().limit(pageSize).skip(skip);
-    res.send(countries);
-  }
-);
+  const countries = await Country.find().limit(pageSize).skip(skip);
+  res.send(countries);
+});
 router.get(
   "/api/control/search-countries/:country",
   authorizeUser,
@@ -94,7 +89,7 @@ router.put(
       {
         countryCode: value.countryCode,
         countryName: value.countryName,
-        countryAliases: value.countryAliases,
+        sources: value.sources,
       },
       {},
       { new: true }

@@ -4,7 +4,7 @@ const Schema = mongo.Schema;
 const countrySchema = new Schema({
   countryCode: String,
   countryName: String,
-  countryAliases: [
+  sources: [
     {
       type: String,
     },
