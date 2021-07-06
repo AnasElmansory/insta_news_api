@@ -94,6 +94,7 @@ router.put(
       {},
       { new: true }
     );
+    console.log(country);
     res.send(country);
   }
 );
