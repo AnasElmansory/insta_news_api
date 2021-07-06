@@ -5,7 +5,7 @@ const Admin = require("../models/admin");
 
 function extractToken(req) {
   const { authorization, provider } = req.headers;
-  if (provider === "guest") return { provider, token: "guestToken" };
+  // if (provider === "guest") return { provider, token: "guestToken" };
   if (!authorization) return (req.error = "missing authorization header");
   const token = authorization.split(" ")[1];
   if (!token) return (req.error = "no token found");
@@ -27,7 +27,7 @@ async function authorizeUser(req, res, next) {
     if (data) req.params.userId = data.sub;
     next();
   } else if (provider === "guest") {
-    req.params.userId = provider;
+    req.params.userId = token;
     next();
   } else {
     req.params.error = "unknown provider";

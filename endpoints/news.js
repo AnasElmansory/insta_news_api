@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const News = require("../models/news");
+const Source = require("../models/source");
 const { authorizeUser } = require("../authentication/auth");
 const { sourceSchema } = require("../utils/schemas");
 
@@ -10,13 +11,20 @@ router.get("/api/news", authorizeUser, async (req, res) => {
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   let { page, pageSize } = req.query;
+  let news = [];
   if (!page) page = 1;
   if (!pageSize) pageSize = 10;
   const skip = (page - 1) * pageSize;
-  const news = await News.find()
-    .sort({ created_at: "descending" })
-    .limit(pageSize)
-    .skip(skip);
+  const sources = await Source.find().limit(pageSize).skip(skip);
+
+  for (const source of sources) {
+    console.log(source);
+    const oneNews = await News.findOne({ author_id: source.id }).sort({
+      created_at: "descending",
+    });
+    news.push(oneNews);
+  }
+  console.log(news.length);
   res.send(news);
 });
 
