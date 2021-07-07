@@ -47,6 +47,10 @@ const countrySchema = Joi.object({
   countryCode: Joi.string(),
   sources: Joi.array(),
 });
+const notificationSchema = Joi.object({
+  topic: Joi.string().required(),
+  keywords: Joi.array(),
+});
 
 module.exports = {
   userSchema,
@@ -54,4 +58,5 @@ module.exports = {
   adminSchema,
   newsSchema,
   countrySchema,
+  notificationSchema,
 };
