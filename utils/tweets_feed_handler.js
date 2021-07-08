@@ -1,6 +1,7 @@
 const { getSourceTweets } = require("./twitter_api");
 const News = require("../models/news");
 const Source = require("../models/source");
+const Notification = require("../models/notification_topic");
 const sendNotification = require("../notifications/notification_manager");
 let id = undefined;
 
@@ -13,10 +14,7 @@ async function feedingNews(max_result) {
     );
     if (error) console.error(error);
     tweets.forEach(async (tweet) => {
-      sendNotification(source.username, {
-        title: source.username,
-        body: tweet.text,
-      });
+      handleNotification(source.id, source.username, tweet.text);
       let publishedTweet = { ...tweet };
       const { attachments } = tweet;
       if (attachments && media) {
@@ -26,11 +24,24 @@ async function feedingNews(max_result) {
         );
         publishedTweet.media = tweetMedia;
       }
+
       if (users) publishedTweet.users = users;
       const exists = await News.exists({ id: tweet.id });
       if (!exists) await News.create(publishedTweet);
     });
   });
+}
+
+async function handleNotification(sourceId, sourceName, text) {
+  const notification_topic = await Notification.findOne({ topic: sourceId });
+  for (let keyword of notification_topic.keywords) {
+    if (text.includes(keyword)) {
+      await sendNotification(sourceId, {
+        title: sourceName,
+        body: text,
+      });
+    }
+  }
 }
 
 async function startTwitFeed(max_result) {

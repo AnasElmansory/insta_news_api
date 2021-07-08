@@ -35,6 +35,6 @@ app.use(sources);
 app.use(fetching);
 app.use(countries);
 app.use(favourite);
-app.user(notificatons);
+app.use(notificatons);
 
 app.listen(port, () => console.log(`listening on port ${port}`));

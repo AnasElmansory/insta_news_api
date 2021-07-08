@@ -86,6 +86,7 @@ async function getSourceTweets(userId, maxResult) {
       "referenced_tweets.id.author_id",
       "entities.mentions.username",
       "author_id",
+      "referenced_tweets.id",
     ],
     "user.fields": ["location", "profile_image_url"],
     max_results: maxResult,
