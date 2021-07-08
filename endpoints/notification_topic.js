@@ -58,4 +58,18 @@ router.post("/api/notification_topics", authorizeUser, async (req, res) => {
   const notification = await Notification.create(value);
   res.send(notification);
 });
+
+router.delete(
+  "/api/notification_topics/:topic",
+  authorizeUser,
+  async (req, res) => {
+    const { userId, topic, error } = req.params;
+    if (!userId || error)
+      return res
+        .status(403)
+        .send(`UnAuthorized : ${error || "something went wrong"}`);
+    const notification = await Notification.findOneAndDelete({ topic });
+    res.send(notification);
+  }
+);
 module.exports = router;
