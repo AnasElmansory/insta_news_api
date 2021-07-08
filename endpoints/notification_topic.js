@@ -48,4 +48,14 @@ router.put(
     res.send(notification);
   }
 );
+router.post("/api/notification_topics", authorizeUser, async (req, res) => {
+  const { userId, error } = req.params;
+  const { value } = notificationSchema.validate(req.body);
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
+  const notification = await Notification.create(value);
+  res.send(notification);
+});
 module.exports = router;
