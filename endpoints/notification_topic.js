@@ -55,8 +55,13 @@ router.post("/api/notification_topics", authorizeUser, async (req, res) => {
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
-  const notification = await Notification.create(value);
-  res.send(notification);
+  const exists = await Notification.exists({ topic: value.topic });
+  if (!exists) {
+    const notification = await Notification.create(value);
+    res.send(notification);
+  } else {
+    res.status(409).send("topic already exists!");
+  }
 });
 
 router.delete(
