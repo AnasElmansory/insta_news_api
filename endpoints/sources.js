@@ -105,7 +105,7 @@ router.get(
 );
 
 router.get(
-  "/api/sources/by-country/$country",
+  "/api/sources/by/country/:country",
   authorizeUser,
   async (req, res) => {
     const { userId, error, country } = req.params;
