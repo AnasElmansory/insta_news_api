@@ -6,6 +6,7 @@ const { getSource } = require("../utils/twitter_api");
 
 router.get("/api/sources", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
+
   if (!userId || error)
     return res
       .status(403)
@@ -15,6 +16,17 @@ router.get("/api/sources", authorizeUser, async (req, res) => {
   if (!pageSize) pageSize = 10;
   const skip = (page - 1) * pageSize;
   const sources = await Source.find().limit(pageSize).skip(skip);
+  res.send(sources);
+});
+router.get("/api/follow/sources", authorizeUser, async (req, res) => {
+  const { userId, error } = req.params;
+  const { follows } = req.query;
+  if (!userId || error || !follows)
+    return res
+      .status(403)
+      .send(`UnAuthorized error: ${error || "something went wrong"}`);
+
+  const sources = await Source.find({ id: { $in: follows } });
   res.send(sources);
 });
 

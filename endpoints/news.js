@@ -18,13 +18,28 @@ router.get("/api/news", authorizeUser, async (req, res) => {
   const sources = await Source.find().limit(pageSize).skip(skip);
 
   for (const source of sources) {
-    console.log(source);
     const oneNews = await News.findOne({ author_id: source.id }).sort({
       created_at: "descending",
     });
     news.push(oneNews);
   }
-  console.log(news.length);
+  res.send(news);
+});
+
+router.get("/api/follow/news", authorizeUser, async (req, res) => {
+  const { userId, error } = req.params;
+  const { follows } = req.query;
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized : ${error || "something went wrong"}`);
+  let news = [];
+  for (const source of follows) {
+    const oneNews = await News.findOne({ author_id: source }).sort({
+      created_at: "descending",
+    });
+    news.push(oneNews);
+  }
   res.send(news);
 });
 
