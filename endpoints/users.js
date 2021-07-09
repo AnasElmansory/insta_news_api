@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/user");
+const { userSchema } = require("../utils/schemas");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
 
 router.get(
@@ -34,10 +35,11 @@ router.get(
 );
 
 router.post("/api/users", authorizeUser, async (req, res, next) => {
-  const { user } = req.body;
-  const exists = await User.exists({ id: user.id });
+  const { value } = userSchema.validate(req.body);
+  const exists = await User.exists({ id: value.id });
   if (exists) return res.status(409).send("user already exists");
-  const _user = await User.create({ user });
+  console.log(value);
+  const _user = await User.create({ value });
   res.send(_user);
 });
 
