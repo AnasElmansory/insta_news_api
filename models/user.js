@@ -7,6 +7,7 @@ const userSchema = new Schema({
   email: String,
   avatar: String,
   provider: String,
+  permission: String,
 });
 
 const User = mongo.model("user", userSchema, "users");

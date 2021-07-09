@@ -6,6 +6,7 @@ const userSchema = Joi.object({
   avatar: Joi.string(),
   name: Joi.string().max(50).default(Joi.ref("email")),
   provider: Joi.string().required(),
+  permission: Joi.string().default("user"),
 });
 const adminSchema = Joi.object({
   id: Joi.string().required(),
