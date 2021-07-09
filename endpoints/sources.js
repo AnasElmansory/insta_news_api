@@ -111,8 +111,8 @@ router.get("/sources/by-country/$country", authorizeUser, async (req, res) => {
     return res
       .status(403)
       .send(`UnAuthorized error: ${error || "something went wrong"}`);
-  const country = await Country.findOne({ countryName: country });
-  const sources = await Source.find({ id: { $in: country.sources } });
+  const selectedCountry = await Country.findOne({ countryName: country });
+  const sources = await Source.find({ id: { $in: selectedCountry.sources } });
   res.send(sources);
 });
 
