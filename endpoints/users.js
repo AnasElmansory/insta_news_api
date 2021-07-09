@@ -37,7 +37,7 @@ router.post("/api/users", authorizeUser, async (req, res, next) => {
   const { user } = req.body;
   const exists = await User.exists({ id: user.id });
   if (exists) return res.status(409).send("user already exists");
-  const _user = await User.findOne({ id: user.id });
+  const _user = await User.create({ user });
   res.send(_user);
 });
 

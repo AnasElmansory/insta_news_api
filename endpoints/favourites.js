@@ -5,13 +5,11 @@ const { authorizeUser } = require("../authentication/auth");
 
 router.get("/api/favourite/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
-  console.log(userId);
   if (!userId || error)
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   const fav = await Favourite.findOne({ userId });
-  console.log(fav.favNewsIds);
   let news = [];
   if (fav) {
     const { favNewsIds } = fav;
