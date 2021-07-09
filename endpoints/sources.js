@@ -104,17 +104,20 @@ router.get(
   }
 );
 
-router.get("/sources/by-country/$country", authorizeUser, async (req, res) => {
-  const { userId, error, country } = req.params;
-
-  if (!userId || error)
-    return res
-      .status(403)
-      .send(`UnAuthorized error: ${error || "something went wrong"}`);
-  const selectedCountry = await Country.findOne({ countryName: country });
-  const sources = await Source.find({ id: { $in: selectedCountry.sources } });
-  res.send(sources);
-});
+router.get(
+  "/api/sources/by-country/$country",
+  authorizeUser,
+  async (req, res) => {
+    const { userId, error, country } = req.params;
+    if (!userId || error)
+      return res
+        .status(403)
+        .send(`UnAuthorized error: ${error || "something went wrong"}`);
+    const selectedCountry = await Country.findOne({ countryName: country });
+    const sources = await Source.find({ id: { $in: selectedCountry.sources } });
+    res.send(sources);
+  }
+);
 
 router.post(
   "/api/control/sources",
