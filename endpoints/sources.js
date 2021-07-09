@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Source = require("../models/source");
+const Country = require("../models/country");
 const { sourceSchema } = require("../utils/schemas");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
 const { getSource } = require("../utils/twitter_api");
@@ -102,6 +103,18 @@ router.get(
     });
   }
 );
+
+router.get("/sources/by-country/$country", authorizeUser, async (req, res) => {
+  const { userId, error, country } = req.params;
+
+  if (!userId || error)
+    return res
+      .status(403)
+      .send(`UnAuthorized error: ${error || "something went wrong"}`);
+  const country = await Country.findOne({ countryName: country });
+  const sources = await Source.find({ id: { $in: country.sources } });
+  res.send(sources);
+});
 
 router.post(
   "/api/control/sources",
