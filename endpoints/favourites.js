@@ -10,7 +10,7 @@ router.get("/api/favourite/news", authorizeUser, async (req, res) => {
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   const fav = await Favourite.findOne({ userId });
-  let news;
+  let news = [];
   if (fav) {
     const { favNewsIds } = fav;
     news = await News.find({ id: { $in: favNewsIds } });
