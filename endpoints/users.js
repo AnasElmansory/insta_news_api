@@ -7,7 +7,7 @@ router.get(
   "/api/control/users",
   authorizeUser,
   authorizeAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const { userId, error, isAdmin } = req.params;
     if (error || !userId) return res.status(403).send(error);
     if (!isAdmin) return res.status(401).send("have no permission");
@@ -24,7 +24,7 @@ router.get(
   "/api/control/users/:id",
   authorizeUser,
   authorizeAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(409).send("have no permission");
     const { id } = req.params;
@@ -34,12 +34,11 @@ router.get(
   }
 );
 
-router.post("/api/users", authorizeUser, async (req, res, next) => {
+router.post("/api/users", authorizeUser, async (req, res) => {
   const { value } = userSchema.validate(req.body);
   const exists = await User.exists({ id: value.id });
   if (exists) return res.status(409).send("user already exists");
-  console.log(value);
-  const _user = await User.create({ value });
+  const _user = await User.create(value);
   res.send(_user);
 });
 
@@ -47,7 +46,7 @@ router.put(
   "/api/users/:id",
   authorizeUser,
   authorizeAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const { userId, id } = req.params;
     const { user } = req.body;
     if (!id || !user) return res.status(400).send("bad request");
@@ -66,7 +65,7 @@ router.delete(
   "/api/control/users/:id",
   authorizeUser,
   authorizeAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const { isAdmin } = req.params;
     if (!isAdmin) return res.status(409).send("have no permission");
     const { id } = req.params;
@@ -80,7 +79,7 @@ router.get(
   "/api/control/search/users/:username",
   authorizeUser,
   authorizeAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const { userId, error, isAdmin, username } = req.params;
     if (!userId || error)
       return res
