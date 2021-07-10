@@ -29,7 +29,10 @@ router.get("/api/news", authorizeUser, async (req, res) => {
 router.get("/api/follow/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { follows } = req.query;
-  const sources = follows.split(",");
+  let sources = [];
+  if (follows !== "") {
+    sources = follows.split(",");
+  }
   if (!userId || error)
     return res
       .status(403)
