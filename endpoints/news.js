@@ -69,13 +69,12 @@ router.get("/api/news/by/source", authorizeUser, async (req, res) => {
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   if (!source) return res.status(400).send("no news source specified");
-  const { error: validationError, value } = sourceSchema.validate(source);
-  if (validationError) return res.status(400).send(validationError);
+  const { id, username, name } = source;
   const news = await News.find({
     $or: [
-      { author_id: value.id },
-      { "users.username": value.username },
-      { "users.name": value.name },
+      { author_id: id },
+      { "users.username": username },
+      { "users.name": name },
     ],
   })
     .sort({ created_at: "descending" })
