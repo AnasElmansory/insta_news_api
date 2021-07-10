@@ -29,12 +29,15 @@ router.get("/api/news", authorizeUser, async (req, res) => {
 router.get("/api/follow/news", authorizeUser, async (req, res) => {
   const { userId, error } = req.params;
   const { follows } = req.query;
+  console.log(follows);
+  const sources = Array.from(follows);
+  console.log(sources);
   if (!userId || error)
     return res
       .status(403)
       .send(`UnAuthorized : ${error || "something went wrong"}`);
   let news = [];
-  for (const source of follows) {
+  for (const source of sources) {
     const oneNews = await News.findOne({ author_id: source }).sort({
       created_at: "descending",
     });
