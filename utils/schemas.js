@@ -50,6 +50,7 @@ const countrySchema = Joi.object({
 });
 const notificationSchema = Joi.object({
   topic: Joi.string().required(),
+  username: Joi.string().required(),
   keywords: Joi.array(),
 });
 

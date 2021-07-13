@@ -24,7 +24,9 @@ router.get(
   errorHandler,
   async (req, res) => {
     const { topic } = req.params;
-    const notifications = await Notification.find({ topic });
+    const notifications = await Notification.find({
+      $or: [{ topic }, { username: { $regex: topic, $options: "i" } }],
+    });
     res.send(notifications);
   }
 );

@@ -3,6 +3,7 @@ const Schema = mongo.Schema;
 
 const notificationSchema = new Schema({
   topic: String,
+  username: String,
   keywords: [
     {
       type: String,
