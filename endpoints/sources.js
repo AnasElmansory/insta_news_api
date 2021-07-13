@@ -27,8 +27,10 @@ router.get(
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
     const sources = await Source.find({
-      username: { $regex: decodedSource, $options: "i" },
-      name: { $regex: decodedSource, $options: "i" },
+      $or: [
+        { username: { $regex: decodedSource, $options: "i" } },
+        { name: { $regex: decodedSource, $options: "i" } },
+      ],
     })
       .limit(pageSize)
       .skip(skip);
