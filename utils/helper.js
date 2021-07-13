@@ -1,11 +1,13 @@
-// function allowOrigin(req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:50500");
-//   res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "content-type, authorization, provider, x-api-key"
-//   );
-//   next();
-// }
-
-// module.exports = { allowOrigin };
+function errorHandler(req, res, next) {
+  const { error, userId, isAdmin } = req.params;
+  if (error) {
+    return res.status(403).send(`unauthorized : ${error}`);
+  } else if (!userId) {
+    return res.status(403).send("unauthorized User");
+  } else if (isAdmin !== undefined && !isAdmin) {
+    return res.status(403).send("you don't have admin permission");
+  } else {
+    next();
+  }
+}
+module.exports = { errorHandler };

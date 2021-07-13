@@ -98,6 +98,7 @@ async function getSourceTweets(userId, maxResult) {
     result.media = _result.data.includes.media;
     result.places = _result.data.includes.places;
     result.users = _result.data.includes.users;
+    result.referencedTweets = _result.data.includes.tweets;
   }
   return result;
 }

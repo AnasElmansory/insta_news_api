@@ -8,10 +8,8 @@ let id = undefined;
 async function feedingNews(max_result) {
   const sources = await Source.find();
   sources.forEach(async (source) => {
-    const { tweets, error, media, meta, users } = await getSourceTweets(
-      source.id,
-      max_result
-    );
+    const { tweets, error, media, users, referencedTweets } =
+      await getSourceTweets(source.id, max_result);
     if (error) console.error(error);
     tweets.forEach(async (tweet) => {
       handleNotification(source.id, source.username, tweet.text);
@@ -24,7 +22,16 @@ async function feedingNews(max_result) {
         );
         publishedTweet.media = tweetMedia;
       }
-
+      if (referencedTweets) {
+        let referenced_tweet_objects = [];
+        for (const reference of tweet.referenced_tweets) {
+          const oneRefTweet = referencedTweets.find(
+            (t) => t.id === reference.id
+          );
+          referenced_tweet_objects.push(oneRefTweet);
+        }
+        publishedTweet.referenced_tweet_objects = referenced_tweet_objects;
+      }
       if (users) publishedTweet.users = users;
       const exists = await News.exists({ id: tweet.id });
       if (!exists) await News.create(publishedTweet);

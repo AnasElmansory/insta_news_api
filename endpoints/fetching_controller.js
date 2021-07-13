@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { stringify } = require("flatted");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
+const { errorHandler } = require("../utils/helper");
 const {
   checkFeedingState,
   startTwitFeed,
@@ -8,35 +9,33 @@ const {
 } = require("../utils/tweets_feed_handler");
 
 router.get(
-  "/api/control/feeding",
+  "/control/feeding",
   authorizeUser,
   authorizeAdmin,
+  errorHandler,
   async (req, res) => {
-    const { isAdmin } = req.params;
-    if (!isAdmin) return res.status(401).send("have no permission");
     const isFeeding = checkFeedingState();
     res.json({ feeding: isFeeding });
   }
 );
 router.post(
-  "/api/control/startfeeding",
+  "/control/startfeeding",
   authorizeUser,
   authorizeAdmin,
+  errorHandler,
   async (req, res) => {
-    const { isAdmin, max_result } = req.params;
-    if (!isAdmin) return res.status(401).send("have no permission");
+    const { max_result } = req.query;
     const _id = await startTwitFeed();
     const isFeeding = _id !== undefined;
     res.json({ id: stringify(_id), feeding: isFeeding });
   }
 );
 router.post(
-  "/api/control/stopfeeding",
+  "/control/stopfeeding",
   authorizeUser,
   authorizeAdmin,
+  errorHandler,
   async (req, res) => {
-    const { isAdmin } = req.params;
-    if (!isAdmin) return res.status(401).send("have no permission");
     const { result, _id } = stopTwitFeed();
     const isFeeding = _id !== undefined;
     res.json({ result, _id, feeding: isFeeding });

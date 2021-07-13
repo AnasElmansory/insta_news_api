@@ -27,7 +27,6 @@ async function authorizeUser(req, res, next) {
     if (data) req.params.userId = data.sub;
     next();
   } else if (provider === "guest") {
-    console.log(token);
     req.params.userId = token;
     next();
   } else {
