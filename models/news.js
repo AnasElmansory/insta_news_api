@@ -6,6 +6,14 @@ const referencedTweetSchema = new Schema({
   type: String,
 });
 
+const publicMetricSchema = new Schema({
+  view_count: Number,
+  retweet_count: Number,
+  reply_count: Number,
+  like_count: Number,
+  quote_count: Number,
+});
+
 const mediaSchema = new Schema({
   url: String,
   media_key: String,
@@ -15,14 +23,6 @@ const mediaSchema = new Schema({
   width: Number,
   duration_ms: Number,
   public_metrics: publicMetricSchema,
-});
-
-const publicMetricSchema = new Schema({
-  view_count: Number,
-  retweet_count: Number,
-  reply_count: Number,
-  like_count: Number,
-  quote_count: Number,
 });
 
 const hashtagSchema = new Schema({
