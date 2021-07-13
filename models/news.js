@@ -74,7 +74,7 @@ const newsSchema = new Schema({
   public_metrics: publicMetricSchema,
   media: [mediaSchema],
   referenced_tweets: [referencedTweetSchema],
-  referenced_tweet_objects: [newsSchema],
+  referenced_tweet_objects: Array,
 });
 
 const News = mongo.model("news", newsSchema, "news");
