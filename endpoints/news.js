@@ -45,12 +45,15 @@ router.get(
   errorHandler,
   async (req, res) => {
     const { follows } = req.query;
-    let sources = [];
+    let sources = [],
+      news = [];
     if (follows !== "" && follows !== undefined) sources = follows.split(",");
-
-    const news = await News.findOne({ author_id: { $in: sources } }).sort({
-      created_at: "descending",
-    });
+    for (const source of sources) {
+      const singleNews = await News.findOne({ author_id: source }).sort({
+        created_at: "descending",
+      });
+      if (singleNews !== null) news.push(singleNews);
+    }
     res.send(news);
   }
 );
