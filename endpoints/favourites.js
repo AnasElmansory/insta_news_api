@@ -44,13 +44,16 @@ router.post(
     const { userId } = req.params;
     const { newsId } = req.body;
     const userFavExists = await Favourite.exists({ userId });
-    const exists = await Favourite.exists({ favNewsIds: newsId });
+    const exists = await Favourite.exists({
+      $and: [{ userId }, { favNewsIds: newsId }],
+    });
     if (!userFavExists) {
-      const fav = await Favourite.create({
+      await Favourite.create({
         userId,
         favNewsIds: [newsId],
       });
-      return res.send(fav);
+      const news = await News.findOne({ id: newsId });
+      return res.send(news);
     } else if (!exists) {
       await Favourite.findOneAndUpdate(
         { userId },
