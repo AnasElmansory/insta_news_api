@@ -59,6 +59,7 @@ const twitterUserSchema = new Schema({
   id: String,
   name: String,
   username: String,
+  profile_image_url: String,
 });
 const newsSchema = new Schema({
   id: String,
