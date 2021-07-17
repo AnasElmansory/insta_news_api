@@ -45,6 +45,7 @@ const newsSchema = Joi.object({
 
 const countrySchema = Joi.object({
   countryName: Joi.string().required(),
+  countryName: Joi.string().required(),
   countryCode: Joi.string(),
   sources: Joi.array(),
 });

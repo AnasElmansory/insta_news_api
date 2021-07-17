@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Source = require("../models/source");
 const Country = require("../models/country");
+const SourceFollow = require("../models/follow_source");
 const { sourceSchema } = require("../utils/schemas");
 const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
 const { getSource } = require("../utils/twitter_api");
@@ -43,13 +44,19 @@ router.get(
   authorizeUser,
   errorHandler,
   async (req, res) => {
-    const { follows } = req.query;
-    let sourcesId = [];
-    if (follows !== "" && follows !== undefined) sourcesId = follows.split(",");
-    const sources = await Source.find({ id: { $in: sourcesId } }).sort({
-      created_at: "descending",
-    });
-    res.send(sources);
+    const { userId } = req.params;
+    const { page, pageSize } = req.query;
+    const skip = (page - 1) * pageSize;
+    const followingSources = await SourceFollow.findOne({ userId });
+    if (followingSources === undefined || followingSources === null) {
+      return res.send([]);
+    } else {
+      const { follows } = followingSources;
+      const sources = await Source.find({ id: { $in: follows } })
+        .skip(skip)
+        .limit(pageSize);
+      res.send(sources);
+    }
   }
 );
 
@@ -111,12 +118,13 @@ router.get(
   authorizeUser,
   errorHandler,
   async (req, res) => {
-    const { query, follows } = req.query;
-    let sourcesId = [];
-    if (follows !== "" && follows !== undefined) sourcesId = follows.split(",");
+    const { userId } = req.params;
+    const { query } = req.query;
     const decodedQuery = decodeURI(query);
+    const followingSources = await SourceFollow.findOne({ userId });
+    const { follows = [] } = followingSources;
     const sources = await Source.find({
-      id: { $in: sourcesId },
+      id: { $in: follows },
       $or: [
         { name: { $regex: decodedQuery, $options: "i" } },
         { username: { $regex: decodedQuery, $options: "i" } },
@@ -138,6 +146,37 @@ router.post(
     if (exists) return res.status(409).send("source already exists!");
     const source = await Source.create(value);
     res.send(source);
+  }
+);
+router.post(
+  "/api/sources/manage/follow",
+  authorizeUser,
+  errorHandler,
+  async (req, res) => {
+    const { userId } = req.params;
+    const { sourceId } = req.body;
+    const followingSources = await SourceFollow.findOne({ userId });
+    let result;
+    if (!sourceId) return res.send(result);
+    if (!followingSources) {
+      result = await SourceFollow.create({ userId, follows: [sourceId] });
+    } else {
+      const { follows } = followingSources;
+      if (follows.includes(sourceId)) {
+        result = await SourceFollow.findOneAndUpdate(
+          { userId },
+          { $pull: { follows: sourceId } },
+          { new: true }
+        );
+      } else {
+        result = await SourceFollow.findOneAndUpdate(
+          { userId },
+          { $push: { follows: sourceId } },
+          { new: true }
+        );
+      }
+    }
+    res.send(result);
   }
 );
 

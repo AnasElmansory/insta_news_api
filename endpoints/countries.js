@@ -21,10 +21,12 @@ router.get(
   errorHandler,
   async (req, res) => {
     const { country } = req.params;
-    if (!country)
-      return res.status(400).send("please specify country parameter");
+    const decodedQuery = decodeURI(country);
     const countries = await Country.find({
-      countryName: { $regex: country, $options: "i" },
+      $or: [
+        { countryName: { $regex: country, $options: "i" } },
+        { countryNameAr: { $regex: decodedQuery, $options: "i" } },
+      ],
     });
     res.send(countries);
   }
@@ -41,6 +43,7 @@ router.post(
     const exists = await Country.exists({
       countryCode: value.countryCode,
       countryName: value.countryName,
+      countryNameAr: value.countryNameAr,
     });
     if (exists)
       return res
@@ -61,6 +64,7 @@ router.put(
     const exists = await Country.exists({
       countryCode: value.countryCode,
       countryName: value.countryName,
+      countryNameAr: value.countryNameAr,
     });
     if (!exists)
       return res
@@ -68,7 +72,7 @@ router.put(
         .send(`this country {${value.countryName}} doesn't exists`);
 
     const country = await Country.findOneAndUpdate(
-      { countryName: value.countryName },
+      { countryName: value.countryName, countryNameAr: value.countryNameAr },
       { countryCode: value.countryCode, sources: value.sources },
       { new: true }
     );
@@ -82,7 +86,7 @@ router.delete(
   authorizeAdmin,
   async (req, res) => {
     const { country } = req.params;
-    const exists = await Country.exists({ country });
+    const exists = await Country.exists({ countryName: country });
     if (!exists)
       return res.status(404).send(`this country {${country}} doesn't exists`);
     const _country = await Country.findOneAndDelete({ country });

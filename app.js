@@ -12,6 +12,7 @@ const admins = require("./endpoints/admins");
 const favourite = require("./endpoints/favourites");
 const countries = require("./endpoints/countries");
 const notificatons = require("./endpoints/notification_topic");
+const user_preferences = require("./endpoints/user_preferences");
 const { json } = require("body-parser");
 
 mongo.set("useFindAndModify", false);
@@ -36,5 +37,6 @@ app.use(fetching);
 app.use(countries);
 app.use(favourite);
 app.use(notificatons);
+app.use(user_preferences);
 
 app.listen(port, () => console.log(`listening on port ${port}`));
