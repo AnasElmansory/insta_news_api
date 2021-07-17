@@ -44,11 +44,20 @@ router.get(
   authorizeUser,
   errorHandler,
   async (req, res) => {
-    const { follows } = req.query;
-    let sources = [],
-      news = [];
-    if (follows !== "" && follows !== undefined) sources = follows.split(",");
-    for (const source of sources) {
+    const { userId } = req.params;
+    const { page = 1, pageSize = 10 } = req.query;
+    const skip = (page - 1) * pageSize;
+    const followingSources = await SourceFollow.findOne({ userId });
+    if (!followingSources) {
+      return res.send([]);
+    }
+    const { follows } = followingSources;
+    const paginatedFollows = follows.slice(
+      skip === 0 ? skip : skip + 1,
+      skip + pageSize + 1
+    );
+    let news = [];
+    for (const source of paginatedFollows) {
       const singleNews = await News.findOne({ author_id: source }).sort({
         created_at: "descending",
       });

@@ -48,7 +48,7 @@ router.get(
     const { page, pageSize } = req.query;
     const skip = (page - 1) * pageSize;
     const followingSources = await SourceFollow.findOne({ userId });
-    if (followingSources === undefined || followingSources === null) {
+    if (!followingSources) {
       return res.send([]);
     } else {
       const { follows } = followingSources;
@@ -122,7 +122,10 @@ router.get(
     const { query } = req.query;
     const decodedQuery = decodeURI(query);
     const followingSources = await SourceFollow.findOne({ userId });
-    const { follows = [] } = followingSources;
+    if (!followingSources) {
+      return res.send([]);
+    }
+    const { follows } = followingSources;
     const sources = await Source.find({
       id: { $in: follows },
       $or: [
