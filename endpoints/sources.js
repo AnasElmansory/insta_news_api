@@ -159,7 +159,7 @@ router.post(
     const { userId } = req.params;
     const { sourceId } = req.body;
     const followingSources = await SourceFollow.findOne({ userId });
-    let result;
+    let result = {};
     if (!sourceId) return res.send(result);
     if (!followingSources) {
       result.data = await SourceFollow.create({ userId, follows: [sourceId] });
