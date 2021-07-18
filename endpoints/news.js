@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const News = require("../models/news");
+const SourceFollow = require("../models/follow_source");
 const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
 const { errorHandler } = require("../utils/helper");
 
