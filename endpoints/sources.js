@@ -162,21 +162,24 @@ router.post(
     let result;
     if (!sourceId) return res.send(result);
     if (!followingSources) {
-      result = await SourceFollow.create({ userId, follows: [sourceId] });
+      result.data = await SourceFollow.create({ userId, follows: [sourceId] });
+      result.action = "create";
     } else {
       const { follows } = followingSources;
       if (follows.includes(sourceId)) {
-        result = await SourceFollow.findOneAndUpdate(
+        result.data = await SourceFollow.findOneAndUpdate(
           { userId },
           { $pull: { follows: sourceId } },
           { new: true }
         );
+        result.action = "remove";
       } else {
-        result = await SourceFollow.findOneAndUpdate(
+        result.data = await SourceFollow.findOneAndUpdate(
           { userId },
           { $push: { follows: sourceId } },
           { new: true }
         );
+        result.action = "add";
       }
     }
     res.send(result);

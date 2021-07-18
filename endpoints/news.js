@@ -107,22 +107,20 @@ router.get(
   authorizeUser,
   errorHandler,
   async (req, res) => {
-    const { follows, query } = req.query;
+    const { query } = req.query;
+    const followingSources = await SourceFollow.findOne({ userId });
+    if (!followingSources) {
+      return res.send([]);
+    }
+    const { follows } = followingSources;
     const decodedQuery = decodeURI(query);
-    let sources = [];
-    let news = [];
-    if (follows !== "" && follows !== undefined) {
-      sources = follows.split(",");
-    }
-    for (const source of sources) {
-      const oneNews = await News.findOne({
-        author_id: source,
-        text: { $regex: decodedQuery, $options: "i" },
-      }).sort({
-        created_at: "descending",
-      });
-      if (oneNews !== null) news.push(oneNews);
-    }
+
+    const news = await News.find({
+      author_id: { $in: follows },
+      text: { $regex: decodedQuery, $options: "i" },
+    }).sort({
+      created_at: "descending",
+    });
     res.send(news);
   }
 );
