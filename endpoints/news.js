@@ -107,13 +107,14 @@ router.get(
   authorizeUser,
   errorHandler,
   async (req, res) => {
+    const { userId } = req.params;
     const { query } = req.query;
+    const decodedQuery = decodeURI(query);
     const followingSources = await SourceFollow.findOne({ userId });
     if (!followingSources) {
       return res.send([]);
     }
     const { follows } = followingSources;
-    const decodedQuery = decodeURI(query);
 
     const news = await News.find({
       author_id: { $in: follows },
