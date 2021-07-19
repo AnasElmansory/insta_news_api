@@ -103,4 +103,4 @@ async function getSourceTweets(userId, maxResult) {
   return result;
 }
 
-module.exports = { getSource, getSourceTweets };
+module.exports = { getSource, getSourceTweets, client };
