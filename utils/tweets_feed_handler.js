@@ -56,12 +56,17 @@ async function feedingNews(max_result) {
 
 async function handleNotification(sourceId, sourceName, text) {
   const notification_topic = await Notification.findOne({ topic: sourceId });
-  for (let keyword of notification_topic.keywords) {
-    if (text.includes(keyword)) {
-      await sendNotification(sourceId, {
-        title: sourceName,
-        body: text,
-      });
+  const { keywords } = notification_topic;
+  if (!keywords) {
+    return;
+  } else {
+    for (let keyword of keywords) {
+      if (text.includes(keyword)) {
+        await sendNotification(sourceId, {
+          title: sourceName,
+          body: text,
+        });
+      }
     }
   }
 }
