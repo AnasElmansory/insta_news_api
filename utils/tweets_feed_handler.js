@@ -35,8 +35,8 @@ async function feedingNews(max_result) {
             }
           }
         }
+        publishedTweet.media = tweetMedia;
       }
-      publishedTweet.media = tweetMedia;
       if (referencedTweets) {
         let referenced_tweet_objects = [];
         for (const reference of tweet.referenced_tweets) {
