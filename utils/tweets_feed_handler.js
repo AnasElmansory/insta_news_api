@@ -3,6 +3,8 @@ const News = require("../models/news");
 const Source = require("../models/source");
 const Notification = require("../models/notification_topic");
 const sendNotification = require("../notifications/notification_manager");
+const { bearerToken } = require("../config");
+const axios = require("axios").default;
 let id = undefined;
 
 async function feedingNews(max_result) {
@@ -11,17 +13,30 @@ async function feedingNews(max_result) {
     const { tweets, error, media, users, referencedTweets } =
       await getSourceTweets(source.id, max_result);
     if (error) console.error(error);
-    tweets.forEach(async (tweet) => {
+
+    for (const tweet of tweets) {
       handleNotification(source.id, source.username, tweet.text);
       let publishedTweet = { ...tweet };
       const { attachments } = tweet;
       if (attachments && media) {
         const { media_keys } = attachments;
-        const tweetMedia = media.filter((m) =>
-          media_keys.includes(m.media_key)
-        );
-        publishedTweet.media = tweetMedia;
+        let tweetMedia = [];
+        for (const item of media) {
+          if (media_keys.includes(item.media_key)) {
+            if (item.type === "video") {
+              const { error, data } = await getVideoDetails(publishedTweet.id);
+              if (data && !error) {
+                const { url } = data;
+                let modifiedItem = ({ ...item }.url = url);
+                tweetMedia.push(modifiedItem);
+              }
+            } else {
+              tweetMedia.push(item);
+            }
+          }
+        }
       }
+      publishedTweet.media = tweetMedia;
       if (referencedTweets) {
         let referenced_tweet_objects = [];
         for (const reference of tweet.referenced_tweets) {
@@ -35,7 +50,7 @@ async function feedingNews(max_result) {
       if (users) publishedTweet.users = users;
       const exists = await News.exists({ id: tweet.id });
       if (!exists) await News.create(publishedTweet);
-    });
+    }
   });
 }
 
@@ -69,5 +84,29 @@ function stopTwitFeed() {
 function checkFeedingState() {
   if (id === undefined || !id) return false;
   else return true;
+}
+
+function getVideoDetails(id, mediaKey) {
+  let response = {};
+  const result = await axios.get(
+    `https://api.twitter.com/1.1/statuses/show.json?id=${id}`,
+    {
+      headers: {
+        Authorization: `bearer ${bearerToken}`,
+      },
+    }
+  );
+  const { extended_entities } = result.data;
+  if (!extended_entities) {
+    return (response.error = "video details not found");
+  } else {
+    const { media } = extended_entities;
+    const singleMedia = media.find((x) => x.id_str === mediaKey);
+    const {
+      video_info: { variants },
+    } = singleMedia;
+
+    return (response.data = variants[0]);
+  }
 }
 module.exports = { startTwitFeed, stopTwitFeed, checkFeedingState };
