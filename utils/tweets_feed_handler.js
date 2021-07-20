@@ -86,7 +86,7 @@ function checkFeedingState() {
   else return true;
 }
 
-function getVideoDetails(id, mediaKey) {
+async function getVideoDetails(id, mediaKey) {
   let response = {};
   const result = await axios.get(
     `https://api.twitter.com/1.1/statuses/show.json?id=${id}`,
