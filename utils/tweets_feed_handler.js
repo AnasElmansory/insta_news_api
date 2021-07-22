@@ -72,7 +72,7 @@ async function handleNotification(sourceId, sourceName, text) {
 }
 
 async function startTwitFeed(max_result) {
-  id = setInterval(feedingNews, 500000, max_result);
+  id = setInterval(feedingNews, 2700000, max_result);
   return id;
 }
 
