@@ -1,11 +1,11 @@
 import firebase from "firebase-admin";
-import serviceAccount from "./privateKey.json";
+import { project_id, private_key, client_email } from "./privatekey";
 
 firebase.initializeApp({
   credential: firebase.credential.cert({
-    projectId: serviceAccount.project_id,
-    privateKey: serviceAccount.private_key,
-    clientEmail: serviceAccount.client_email,
+    projectId: project_id,
+    privateKey: private_key,
+    clientEmail: client_email,
   }),
 });
 const fcm = firebase.messaging();
