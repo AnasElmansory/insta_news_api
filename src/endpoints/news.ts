@@ -1,15 +1,16 @@
-const router = require("express").Router();
-const News = require("../models/news");
-const SourceFollow = require("../models/follow_source");
-const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
-const { errorHandler } = require("../utils/helper");
+import express from "express";
+import News from "../models/news";
+import SourceFollow from "../models/follow_source";
+import { authorizeUser, authorizeAdmin } from "../authentication/auth";
+import errorHandler from "../utils/helper";
 
+const router = express.Router();
 router.get(
   "/control/news",
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
     const news = await News.find().skip(skip).limit(pageSize).sort({
@@ -24,7 +25,7 @@ router.get(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10, query } = req.query;
     const decodedQuery = decodeURI(query);
     const skip = (page - 1) * pageSize;
@@ -44,7 +45,7 @@ router.get(
   "/api/news/follow",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { userId } = req.params;
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
@@ -72,7 +73,7 @@ router.get(
   "/api/news/by/source",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10, sourceId } = req.query;
     const skip = (page - 1) * pageSize;
     const news = await News.find({ author_id: sourceId })
@@ -87,7 +88,7 @@ router.get(
   "/api/news/search/by/source",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { sourceId, query } = req.query;
     const decodedQuery = decodeURI(query);
     const sourceFilters = {
@@ -106,7 +107,7 @@ router.get(
   "/api/news/search/by/follow",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { userId } = req.params;
     const { query } = req.query;
     const decodedQuery = decodeURI(query);
@@ -125,5 +126,4 @@ router.get(
     res.send(news);
   }
 );
-
-module.exports = router;
+export default router;

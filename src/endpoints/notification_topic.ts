@@ -1,15 +1,17 @@
-const router = require("express").Router();
-const Notification = require("../models/notification_topic");
-const { notificationSchema } = require("../utils/schemas");
-const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
-const { errorHandler } = require("../utils/helper");
+import express from "express";
+import Notification from "../models/notification_topic";
+import { notificationSchema } from "../utils/schemas";
+import { authorizeAdmin, authorizeUser } from "../authentication/auth";
+import errorHandler from "../utils/helper";
+
+const router = express.Router();
 
 router.get(
   "/control/notification/topics",
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
     const notifications = await Notification.find().limit(pageSize).skip(skip);
@@ -22,7 +24,7 @@ router.get(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { topic } = req.params;
     const notifications = await Notification.find({
       $or: [{ topic }, { username: { $regex: topic, $options: "i" } }],
@@ -36,7 +38,7 @@ router.put(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { value } = notificationSchema.validate(req.body);
     const notification = await Notification.findOneAndUpdate(
       { topic: value.topic },
@@ -51,7 +53,7 @@ router.post(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { value } = notificationSchema.validate(req.body);
     const exists = await Notification.exists({ topic: value.topic });
     if (!exists) {
@@ -68,10 +70,10 @@ router.delete(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { topic } = req.params;
     const notification = await Notification.findOneAndDelete({ topic });
     res.send(notification);
   }
 );
-module.exports = router;
+export default router;

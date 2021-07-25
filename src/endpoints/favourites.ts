@@ -1,25 +1,31 @@
-const router = require("express").Router();
-const Favourite = require("../models/favourite");
-const News = require("../models/news");
-const { authorizeUser } = require("../authentication/auth");
-const { errorHandler } = require("../utils/helper");
+import express from "express";
+import Favourite from "../models/favourite";
+import News from "../models/news";
+import { authorizeUser } from "../authentication/auth";
+import errorHandler from "../utils/helper";
 
-router.get("/api/favourite", authorizeUser, errorHandler, async (req, res) => {
-  const { userId } = req.params;
-  const fav = await Favourite.findOne({ userId });
-  let news = [];
-  if (fav) {
-    const { favNewsIds } = fav;
-    news = await News.find({ id: { $in: favNewsIds } });
+const router = express.Router();
+router.get(
+  "/api/favourite",
+  authorizeUser,
+  errorHandler,
+  async (req: any, res: any) => {
+    const { userId } = req.params;
+    const fav = await Favourite.findOne({ userId });
+    let news = [];
+    if (fav) {
+      const { favNewsIds } = fav;
+      news = await News.find({ id: { $in: favNewsIds } });
+    }
+    res.send(news);
   }
-  res.send(news);
-});
+);
 
 router.get(
   "/api/favourite/search",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { userId } = req.params;
     const { query } = req.query;
     const decodedQuery = decodeURI(query);
@@ -40,7 +46,7 @@ router.post(
   "/api/favourite/news",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { userId } = req.params;
     const { newsId } = req.body;
     const userFavExists = await Favourite.exists({ userId });
@@ -72,4 +78,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

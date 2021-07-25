@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const userSchema = Joi.object({
   id: Joi.string().required(),
@@ -40,12 +40,11 @@ const newsSchema = Joi.object({
   attachments: Joi.object(),
   public_metrics: Joi.object(),
   media: Joi.array(),
-  countries: Joi.array(),
 });
 
 const countrySchema = Joi.object({
   countryName: Joi.string().required(),
-  countryName: Joi.string().required(),
+  countryNameAr: Joi.string().required(),
   countryCode: Joi.string(),
   sources: Joi.array(),
 });
@@ -55,7 +54,7 @@ const notificationSchema = Joi.object({
   keywords: Joi.array(),
 });
 
-module.exports = {
+export {
   userSchema,
   sourceSchema,
   adminSchema,

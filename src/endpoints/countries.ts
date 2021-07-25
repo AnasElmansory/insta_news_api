@@ -1,14 +1,15 @@
-const router = require("express").Router();
-const Country = require("../models/country");
-const { countrySchema } = require("../utils/schemas");
-const { authorizeUser, authorizeAdmin } = require("../authentication/auth");
-const { errorHandler } = require("../utils/helper");
+import express from "express";
+import Country from "../models/country";
+import { authorizeUser, authorizeAdmin } from "../authentication/auth";
+import errorHandler from "../utils/helper";
+import { countrySchema } from "../utils/schemas";
 
+const router = express.Router();
 router.get(
   "/control/countries",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
     const countries = await Country.find().limit(pageSize).skip(skip);
@@ -19,7 +20,7 @@ router.get(
   "/control/countries/search/:country",
   authorizeUser,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { country } = req.params;
     const decodedQuery = decodeURI(country);
     const countries = await Country.find({
@@ -37,7 +38,7 @@ router.post(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { error, value } = countrySchema.validate(req.body);
     if (error) return res.status(400).send(error);
     const exists = await Country.exists({
@@ -58,7 +59,7 @@ router.put(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { error, value } = countrySchema.validate(req.body);
     if (error) return res.status(400).send(error);
     const exists = await Country.exists({
@@ -84,7 +85,7 @@ router.delete(
   "/control/countries/:country",
   authorizeUser,
   authorizeAdmin,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { country } = req.params;
     const exists = await Country.exists({ countryName: country });
     if (!exists)
@@ -94,4 +95,4 @@ router.delete(
   }
 );
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-function errorHandler(req, res, next) {
+function errorHandler(req: any, res: any, next: () => void) {
   const { error, userId, isAdmin } = req.params;
   if (error) {
     return res.status(403).send(`unauthorized : ${error}`);
@@ -10,4 +10,4 @@ function errorHandler(req, res, next) {
     next();
   }
 }
-module.exports = { errorHandler };
+export default errorHandler;

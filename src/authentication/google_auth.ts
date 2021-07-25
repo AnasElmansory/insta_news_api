@@ -1,11 +1,16 @@
-const { OAuth2Client } = require("google-auth-library");
-const { googleClientId } = require("../config");
+import { OAuth2Client } from "google-auth-library";
+import { googleClientId } from "../config";
+
+interface Result {
+  data?: any;
+  error?: any;
+}
 //todo google client id;
 const oAuth2Client = new OAuth2Client(googleClientId);
 //todo get info about user google access token;
 
-module.exports = async function verifyGoogleUser(token) {
-  const response = {};
+export default async function verifyGoogleUser(token: string) {
+  let response: Result = {};
   try {
     const tokenInfo = await oAuth2Client.getTokenInfo(token);
     response.data = tokenInfo;
@@ -14,7 +19,7 @@ module.exports = async function verifyGoogleUser(token) {
     response.error = err;
     return response;
   }
-};
+}
 
 /* 
 {

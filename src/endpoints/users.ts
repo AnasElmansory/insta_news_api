@@ -1,16 +1,17 @@
-const router = require("express").Router();
-const User = require("../models/user");
-const { userSchema } = require("../utils/schemas");
-const { authorizeAdmin, authorizeUser } = require("../authentication/auth");
-const { errorHandler } = require("../utils/helper");
+import express from "express";
+import User from "../models/user";
+import { userSchema } from "../utils/schemas";
+import { authorizeAdmin, authorizeUser } from "../authentication/auth";
+import errorHandler from "../utils/helper";
 const permissions = ["user", "editor", "owner"];
 
+const router = express.Router();
 router.get(
   "/control/users",
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { page = 1, pageSize = 10 } = req.query;
     const skip = (page - 1) * pageSize;
     const users = await User.find().limit(pageSize).skip(skip);
@@ -24,7 +25,7 @@ router.put(
   authorizeAdmin,
   errorHandler,
   updateUserErrorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { id } = req.params;
     const { permission } = req.body;
     const user = await User.findOneAndUpdate(
@@ -43,7 +44,7 @@ router.delete(
   authorizeAdmin,
   errorHandler,
   updateUserErrorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { id } = req.params;
     const user = await User.findOneAndDelete({ id });
     res.send(user);
@@ -55,7 +56,7 @@ router.get(
   authorizeUser,
   authorizeAdmin,
   errorHandler,
-  async (req, res) => {
+  async (req: any, res: any) => {
     const { query } = req.query;
     const users = await User.find({ name: { $regex: query, $options: "i" } });
     res.send(users);
@@ -69,7 +70,7 @@ router.post("/api/users", authorizeUser, errorHandler, async (req, res) => {
   res.send(user);
 });
 
-async function updateUserErrorHandler(req, res, next) {
+async function updateUserErrorHandler(req: any, res: any, next: () => void) {
   const { id } = req.params;
   const editedUser = await User.findOne({ id });
   if (!editedUser) {
@@ -83,4 +84,4 @@ async function updateUserErrorHandler(req, res, next) {
   }
 }
 
-module.exports = router;
+export default router;

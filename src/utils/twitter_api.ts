@@ -1,10 +1,22 @@
-const TwitterApi = require("twitter-api-v2").default;
-const { bearerToken } = require("../config");
+import TwitterApi, {
+  ApiV2Includes,
+  TweetUserTimelineV2Paginator,
+  TweetV2,
+  UsersV2Params,
+  UserV2,
+} from "twitter-api-v2";
+import { bearerToken } from "../config";
 const twitter = new TwitterApi(bearerToken);
 const client = twitter.readWrite;
 
-async function getSource({ id, username }) {
-  const userFields = {
+interface SourceResult {
+  data?: UserV2;
+  error?: string;
+  includes?: ApiV2Includes | undefined;
+}
+
+async function getSource(username: string) {
+  const userFields: Partial<UsersV2Params> = {
     "user.fields": [
       "created_at",
       "description",
@@ -17,15 +29,9 @@ async function getSource({ id, username }) {
       "verified",
     ],
   };
-  let result = {};
-  if (!id && !username) {
-    result.error = "no id or username are specified";
-    return result;
-  } else if (id) {
-    const _result = await client.v2.user(id, userFields);
-    result.data = _result.data;
-    result.error = JSON.stringify(_result.errors);
-    result.includes = _result.includes;
+  let result: SourceResult = {};
+  if (!username) {
+    result.error = "please specify source username";
     return result;
   } else if (username) {
     const _result = await client.v2.userByUsername(username, userFields);
@@ -39,12 +45,7 @@ async function getSource({ id, username }) {
   }
 }
 
-async function getSourceTweets(userId, maxResult) {
-  let result = {};
-  if (!userId) {
-    result.error = "no userId specified";
-    return result;
-  }
+async function getSourceTweets(userId: string, maxResult = 10) {
   const _result = await client.v2.userTimeline(userId, {
     "place.fields": [
       "contained_within",
@@ -91,16 +92,16 @@ async function getSourceTweets(userId, maxResult) {
     "user.fields": ["location", "profile_image_url"],
     max_results: maxResult,
   });
-  result.tweets = _result.tweets;
-  result.error = _result.data.errors;
-  result.meta = _result.data.meta;
-  if (_result.data.includes) {
-    result.media = _result.data.includes.media;
-    result.places = _result.data.includes.places;
-    result.users = _result.data.includes.users;
-    result.referencedTweets = _result.data.includes.tweets;
-  }
-  return result;
+  // result.tweets = _result.tweets;
+  // result.error = _result.data.errors;
+  // result.meta = _result.data.meta;
+  // if (_result.data.includes) {
+  //   result.media = _result.data.includes.media;
+  //   result.places = _result.data.includes.places;
+  //   result.users = _result.data.includes.users;
+  //   result.referencedTweets = _result.data.includes.tweets;
+  // }
+  return _result;
 }
 
-module.exports = { getSource, getSourceTweets, client };
+export { getSource, getSourceTweets, client };
