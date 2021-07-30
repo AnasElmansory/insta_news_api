@@ -1,7 +1,7 @@
 import verifyFacebookUser from "./facebook_auth";
 import verifyGoogleUser from "./google_auth";
 
-const Admin = require("../models/admin");
+import Admin from "../models/admin";
 
 function extractToken(req: {
   headers: { authorization?: string; provider?: string };
@@ -46,11 +46,7 @@ async function authorizeUser(req: any, res: any, next: () => void) {
     next();
   }
 }
-async function authorizeAdmin(
-  req: { params: { isAdmin?: any; userId?: any } },
-  res: any,
-  next: () => void
-) {
+async function authorizeAdmin(req: any, res: any, next: () => void) {
   const { userId } = req.params;
   const isAdmin = await Admin.exists({ id: userId });
   req.params.isAdmin = isAdmin;
