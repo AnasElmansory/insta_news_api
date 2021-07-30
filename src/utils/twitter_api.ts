@@ -92,15 +92,7 @@ async function getSourceTweets(userId: string, maxResult = 10) {
     "user.fields": ["location", "profile_image_url"],
     max_results: maxResult,
   });
-  // result.tweets = _result.tweets;
-  // result.error = _result.data.errors;
-  // result.meta = _result.data.meta;
-  // if (_result.data.includes) {
-  //   result.media = _result.data.includes.media;
-  //   result.places = _result.data.includes.places;
-  //   result.users = _result.data.includes.users;
-  //   result.referencedTweets = _result.data.includes.tweets;
-  // }
+
   return _result;
 }
 

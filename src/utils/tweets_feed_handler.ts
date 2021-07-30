@@ -109,9 +109,8 @@ async function handleNotification(
     }
   }
 }
-
 async function startTwitFeed(max_result?: number) {
-  id = setInterval(feedingNews, 50000, max_result);
+  id = setInterval(feedingNews, 3600000, max_result);
   return id;
 }
 

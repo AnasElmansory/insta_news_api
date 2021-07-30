@@ -9,14 +9,12 @@ import errorHandler from "../utils/helper";
 
 const router = express.Router();
 
-interface FollowResult {
-  data: any;
-  action: string;
-}
+
 
 router.get(
   "/control/sources",
   authorizeUser,
+  authorizeAdmin,
   errorHandler,
   async (req: any, res: any) => {
     const { page = 1, pageSize = 10 } = req.query;
@@ -28,6 +26,7 @@ router.get(
 router.get(
   "/control/sources/search/:source",
   authorizeUser,
+  authorizeAdmin,
   errorHandler,
   async (req: any, res: any) => {
     const { source } = req.params;
