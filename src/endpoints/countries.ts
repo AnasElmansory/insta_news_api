@@ -74,7 +74,7 @@ router.put(
 
     const country = await Country.findOneAndUpdate(
       { countryName: value.countryName, countryNameAr: value.countryNameAr },
-      { countryCode: value.countryCode, sources: value.sources },
+      { countryCode: value.countryCode, $addToSet: { sources: value.sources } },
       { new: true }
     );
     res.send(country);
