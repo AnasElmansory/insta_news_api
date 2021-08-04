@@ -46,7 +46,12 @@ const countrySchema = Joi.object({
   countryName: Joi.string().required(),
   countryNameAr: Joi.string().required(),
   countryCode: Joi.string(),
-  sources: Joi.array(),
+  sources: Joi.array().items(
+    Joi.object({
+      id: Joi.string().required(),
+      name: Joi.string().required(),
+    })
+  ),
 });
 const notificationSchema = Joi.object({
   topic: Joi.string().required(),

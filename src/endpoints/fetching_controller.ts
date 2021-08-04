@@ -23,7 +23,7 @@ router.get(
 router.post(
   "/control/startfeeding",
   authorizeUser,
-  // authorizeAdmin,
+  authorizeAdmin,
   errorHandler,
   async (req: any, res: any) => {
     const { max_result } = req.query;
@@ -35,7 +35,7 @@ router.post(
 router.post(
   "/control/stopfeeding",
   authorizeUser,
-  // authorizeAdmin,
+  authorizeAdmin,
   errorHandler,
   async (req: any, res: any) => {
     const { result, id } = stopTwitFeed();
