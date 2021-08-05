@@ -47,9 +47,11 @@ router.post(
     const { error, value } = countrySchema.validate(req.body);
     if (error) return res.status(400).send(error);
     const exists = await Country.exists({
-      countryCode: value.countryCode,
-      countryName: value.countryName,
-      countryNameAr: value.countryNameAr,
+      $or: [
+        { countryCode: value.countryCode },
+        { countryName: value.countryName },
+        { countryNameAr: value.countryNameAr },
+      ],
     });
     if (exists)
       return res
