@@ -21,10 +21,10 @@ const sourceSchema = Joi.object({
   id: Joi.string().required(),
   username: Joi.string().required(),
   name: Joi.string().max(50).required(),
-  profile_image_url: Joi.string().default(""),
-  url: Joi.string().default(""),
+  profile_image_url: Joi.string().allow(null, "").default(""),
+  url: Joi.string().allow(null, "").default(""),
   location: Joi.string().default("unknown"),
-  description: Joi.string().default(""),
+  description: Joi.string().allow(null, "").default(""),
   created_at: Joi.string(),
   verified: Joi.bool().default(false),
 });
