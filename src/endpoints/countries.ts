@@ -4,6 +4,11 @@ import { authorizeUser, authorizeAdmin } from "../authentication/auth";
 import errorHandler from "../utils/helper";
 import { countrySchema } from "../utils/schemas";
 
+interface CountrySource {
+  id: string;
+  name: string;
+}
+
 const router = express.Router();
 router.get(
   "/control/countries",
@@ -72,9 +77,11 @@ router.put(
         .status(404)
         .send(`this country {${value.countryName}} doesn't exists`);
 
+    const countrySources = new Set<CountrySource>(value.sources);
+
     const country = await Country.findOneAndUpdate(
       { countryName: value.countryName, countryNameAr: value.countryNameAr },
-      { countryCode: value.countryCode, $addToSet: { sources: value.sources } },
+      { countryCode: value.countryCode, sources: [...countrySources] },
       { new: true }
     );
     res.send(country);
