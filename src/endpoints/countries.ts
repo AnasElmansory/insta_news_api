@@ -83,7 +83,11 @@ router.put(
 
     const country = await Country.findOneAndUpdate(
       { countryName: value.countryName, countryNameAr: value.countryNameAr },
-      { countryCode: value.countryCode, sources: [...countrySources] },
+      {
+        countryName: value.countryName,
+        countryNameAr: value.countryNameAr,
+        sources: [...countrySources],
+      },
       { new: true }
     );
     res.send(country);
