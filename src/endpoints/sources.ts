@@ -9,8 +9,6 @@ import errorHandler from "../utils/helper";
 
 const router = express.Router();
 
-
-
 router.get(
   "/control/sources",
   authorizeUser,
@@ -94,7 +92,8 @@ router.get(
   async (req: any, res: any) => {
     const { country } = req.params;
     const selectedCountry = await Country.findOne({ countryName: country });
-    const sources = await Source.find({ id: { $in: selectedCountry.sources } });
+    const sourcesIdList = selectedCountry.sources.map((x: any) => x.id);
+    const sources = await Source.find({ id: { $in: sourcesIdList } });
     res.send(sources);
   }
 );
@@ -108,8 +107,10 @@ router.get(
     const { query } = req.query;
     const decodedQuery = decodeURI(query);
     const selectedCountry = await Country.findOne({ countryName: country });
+    const sourcesIdList = selectedCountry.sources.map((x: any) => x.id);
+
     const sources = await Source.find({
-      id: { $in: selectedCountry.sources },
+      id: { $in: sourcesIdList },
       $or: [
         { name: { $regex: decodedQuery, $options: "i" } },
         { username: { $regex: decodedQuery, $options: "i" } },
